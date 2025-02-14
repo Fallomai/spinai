@@ -1,7 +1,6 @@
 import { BedrockRuntimeClient, ConverseCommand, ToolChoice } from "@aws-sdk/client-bedrock-runtime";
 import { LLM, CompletionOptions, CompletionResult } from "./base";
 import { calculateCost } from "../utils/tokenCounter";
-import { json } from "stream/consumers";
 
 export interface BedrockConfig {
   region?: string;
@@ -42,7 +41,7 @@ export function createBedrockLLM(config: BedrockConfig): LLM {
         : {
           auto: {}, // Default behavior when not using Claude 3
         };
-
+      
       const response = await bedrock.send(new ConverseCommand({
         modelId: model,
         messages: [{ role: "user", content: [{ text: prompt }] }],
