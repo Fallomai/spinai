@@ -7,5 +7,5 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["ergo-crm-agent", "support-agent", "calculator-agent"]
+  "ignore": ["support-agent", "calculator-agent"]
 }
