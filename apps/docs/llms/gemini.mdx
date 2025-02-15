@@ -1,0 +1,71 @@
+---
+title: "Working with the Gemini Model in SpinAI"
+description: "Learn how to utilize the Gemini model within the SpinAI package for enhanced AI-driven applications."
+---
+
+## Introduction
+
+The Gemini model, powered by Google Generative AI, is now supported within the SpinAI package, offering developers a powerful tool for generating content. This documentation guides you through setting up and using the Gemini model in your SpinAI applications.
+
+## Setup and Configuration
+
+Before you can start using the Gemini model, you need to configure it with your API key and optionally specify the model version and other parameters.
+
+```typescript
+interface GeminiConfig {
+  apiKey: string;
+  model?: string; // Defaults to "gemini-2.0-flash"
+}
+```
+
+## Creating a Gemini LLM Instance
+
+To create a Gemini LLM (Large Language Model) instance, use the `createGeminiLLM` function. This function requires a `GeminiConfig` object as its parameter.
+
+### Basic Gemini LLM creation
+
+```typescript
+import { createGeminiLLM } from "spinai";
+
+const geminiLLM = createGeminiLLM({
+  apiKey: process.env.GEMINI_API_KEY,
+});
+```
+
+### Advanced configuration
+
+You can also specify the model version to use a specific version of the Gemini model. If not specified, it defaults to "gemini-2.0-flash".
+
+```typescript
+const geminiLLM = createGeminiLLM({
+  apiKey: process.env.GEMINI_API_KEY,
+  model: "gemini-2.0-flash", // Optional
+});
+```
+
+## Integration Examples
+
+Once you have your Gemini LLM instance, you can integrate it into your SpinAI agent for various tasks, such as content generation, question answering, or any other AI-driven task.
+
+```typescript
+import { createAgent } from "spinai";
+
+const agent = createAgent({
+  instructions: "Generate a marketing copy",
+  actions: [/* Define actions here */],
+  llm: geminiLLM,
+});
+```
+
+## Best Practices
+
+- **API Key Security**: Ensure your API key is stored securely and not hard-coded in your source code.
+- **Model Selection**: While the default model ("gemini-2.0-flash") is suitable for a wide range of tasks, consider specifying a model version that best fits your specific needs.
+- **Error Handling**: Implement comprehensive error handling to manage and respond to any issues that may arise during the model's operation.
+
+## Troubleshooting
+
+- **API Key Issues**: If you encounter authentication errors, double-check your API key and ensure it is correct and has the necessary permissions.
+- **Model Responses**: For unexpected model responses, review your prompt and parameters to ensure they are correctly formatted and aligned with your intended task.
+
+For further assistance, refer to the [SpinAI documentation overview](/docs/llms/overview) or reach out to the SpinAI support team.
