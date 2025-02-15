@@ -13,11 +13,25 @@ npx create-spinai
 
 ## Choose a template, and configure your .env (read the README of the template you choose)
 
-Usually you'll need at minimum a `.env` file with your LLM's api key (OPENAI_API_KEY by default).
+Usually, you'll need at minimum a `.env` file with your LLM's API key (OPENAI_API_KEY by default).
 
 ```bash
 OPENAI_API_KEY=your_api_key_here
 ```
+
+## Adding Gemini to Your Project
+
+With the recent update, our project now includes support for Gemini, a powerful tool from Google for generative AI tasks. To ensure your project can utilize Gemini, you need to add the `@google/generative-ai` dependency to your project.
+
+### Installing Gemini Dependency
+
+If you're setting up a new project or updating an existing one, make sure to include the Gemini dependency by running:
+
+```bash
+npm install @google/generative-ai
+```
+
+This command adds the `@google/generative-ai` package to your project, enabling you to leverage Google's generative AI capabilities alongside OpenAI's models.
 
 ## Run Your Agent
 
@@ -30,7 +44,7 @@ npm run dev
 That's it! Your agent will now:
 
 1. Receive the user's question
-2. Decide to use the getWeather action
+2. Decide to use the getWeather action or leverage Gemini's capabilities
 3. Execute the action
 4. Provide a response
 
@@ -41,6 +55,6 @@ That's it! Your agent will now:
     Learn how to build more complex agents
   </Card>
   <Card title="Examples" icon="lightbulb" href="/examples">
-    See real-world examples
+    See real-world examples, including how to integrate Gemini
   </Card>
 </CardGroup>
