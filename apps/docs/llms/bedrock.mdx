@@ -1,0 +1,72 @@
+---
+title: "Amazon Bedrock LLM Integration"
+description: "Integrate Amazon Bedrock LLMs with SpinAI for advanced natural language processing capabilities."
+---
+
+## Introduction
+
+The Amazon Bedrock LLM integration with SpinAI enables developers to leverage state-of-the-art language models for a variety of applications, including chatbots, content generation, and more. This documentation provides an overview of how to set up and use the Amazon Bedrock LLMs within the SpinAI package.
+
+## Setup and Configuration
+
+To begin using the Amazon Bedrock LLMs, you need to configure your environment with the necessary credentials and settings. The `BedrockConfig` interface outlines the required and optional configuration parameters.
+
+```typescript
+interface BedrockConfig {
+  region?: string;
+  access_key?: string;
+  secret_key?: string;
+  profile?: string;
+  model?: string; // Defaults to "anthropic.claude-3-5-sonnet-20240620-v1:0"
+}
+```
+
+- `region`: The AWS region where the Bedrock LLM is hosted.
+- `access_key` and `secret_key`: Your AWS credentials. These are required unless you are using a named profile.
+- `profile`: A named profile as defined in your AWS credentials file. This is an alternative to providing `access_key` and `secret_key` directly.
+- `model`: The specific Bedrock model you wish to use. If not specified, a default model will be used.
+
+## Creating a Bedrock LLM Agent
+
+To create a Bedrock LLM agent, use the `createBedrockLLM` function with your configuration. This function returns an LLM instance that can be used to generate completions.
+
+```typescript
+import { createBedrockLLM } from "spinai";
+
+const llm = createBedrockLLM({
+  region: "us-west-2",
+  access_key: process.env.AWS_ACCESS_KEY_ID,
+  secret_key: process.env.AWS_SECRET_ACCESS_KEY,
+  model: "your-model-id", // Optional
+});
+```
+
+## Example Usage
+
+Once you have your Bedrock LLM agent set up, you can use it to generate text completions. Here's a basic example:
+
+```typescript
+async function generateText() {
+  const result = await llm.complete({
+    prompt: "Write a short story about a robot learning to love.",
+    maxTokens: 512,
+    temperature: 0.9,
+  });
+
+  console.log(result.content); // Outputs the generated text
+}
+```
+
+## Best Practices
+
+- **Caching Credentials**: For production environments, consider using environment variables or AWS IAM roles to manage credentials securely.
+- **Error Handling**: Implement robust error handling to manage API limits and unexpected responses.
+- **Schema Validation**: When expecting structured output, define and validate against a schema to ensure consistency in your application's responses.
+
+## Troubleshooting
+
+- **Authentication Errors**: Ensure your AWS credentials are correctly configured. If using a named profile, verify it exists in your AWS credentials file.
+- **Model Not Found**: Double-check the model ID you're using. Model IDs are case-sensitive and must be entered exactly as they appear in the Amazon Bedrock documentation.
+- **Rate Limits**: Be mindful of the API rate limits. Implement retry logic with exponential backoff to handle rate limit errors gracefully.
+
+For more detailed information on configuring and using Amazon Bedrock LLMs with SpinAI, refer to the [official AWS documentation](https://aws.amazon.com/documentation/).
