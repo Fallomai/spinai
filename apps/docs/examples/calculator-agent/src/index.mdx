@@ -1,0 +1,49 @@
+---
+title: "Calculator Agent with Amazon Bedrock"
+description: "Learn how to implement a calculator agent using Amazon Bedrock LLMs with the SpinAI library."
+---
+
+## Introduction
+
+This documentation provides an overview and example implementation of a calculator agent using Amazon Bedrock Large Language Models (LLMs) through the SpinAI library. Amazon Bedrock LLMs offer a powerful and flexible foundation for building intelligent agents capable of understanding and performing complex tasks. This example focuses on creating a calculator agent that can perform basic arithmetic operations such as addition and subtraction.
+
+## Implementation Details
+
+To integrate Amazon Bedrock LLMs into the calculator agent, you first need to import the necessary functions from the SpinAI library. The `createBedrockLLM` function is used to instantiate a Bedrock LLM with a specified model. In this example, we use the "amazon.nova-micro-v1:0" model, which is suitable for arithmetic operations and other computational tasks.
+
+The calculator agent is configured with instructions that define its purpose and capabilities. It is also equipped with actions, which are specific functions that the agent can perform—in this case, `sum` and `minus` for addition and subtraction, respectively.
+
+```typescript
+import { createAgent, createBedrockLLM } from "spinai";
+import * as dotenv from "dotenv";
+import { sum } from "./actions/sum";
+import { minus } from "./actions/minus";
+
+// Initialize environment variables
+dotenv.config();
+
+// Instantiate a Bedrock LLM
+const llm = createBedrockLLM({
+  model: "amazon.nova-micro-v1:0"
+});
+
+// Create the calculator agent
+const calculatorAgent = createAgent<number>({
+  instructions: `You are a calculator agent that helps users perform mathematical calculations.`,
+  actions: [sum, minus],
+});
+```
+
+## Running the Example
+
+To run the calculator agent example, follow these steps:
+
+1. Ensure you have Node.js and npm installed on your system.
+2. Clone the repository containing the example code.
+3. Navigate to the `examples/calculator-agent` directory.
+4. Install the required dependencies by running `npm install`.
+5. Start the agent by executing `npm start`.
+
+This will initialize the agent and make it ready to perform calculations based on user input. The agent leverages the Amazon Bedrock LLM to understand and execute arithmetic operations, demonstrating the potential of LLMs in creating intelligent, interactive applications.
+
+By integrating Amazon Bedrock LLMs, developers can harness the power of advanced natural language processing to build sophisticated agents capable of a wide range of tasks, from simple calculations to complex decision-making processes.
