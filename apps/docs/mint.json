@@ -61,7 +61,12 @@
     },
     {
       "group": "Agent LLMs",
-      "pages": ["llms/overview", "llms/openai", "llms/anthropic"]
+      "pages": [
+        "llms/overview",
+        "llms/openai",
+        "llms/anthropic",
+        "llms/bedrock"
+      ]
     },
     {
       "group": "Examples",
@@ -74,7 +79,8 @@
             "examples/zendesk-support/configuration",
             "examples/zendesk-support/deployment"
           ]
-        }
+        },
+        "examples/calculator-agent"
       ]
     }
   ],
