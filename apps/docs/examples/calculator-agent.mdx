@@ -1,0 +1,94 @@
+---
+title: "Amazon Bedrock LLM Calculator Agent Example"
+description: "Learn how to create a calculator agent using the Amazon Bedrock LLM with the SpinAI package."
+---
+
+## Introduction
+
+This example demonstrates how to use the Amazon Bedrock Large Language Model (LLM) with the SpinAI package to create a calculator agent. The agent assists users in performing basic mathematical operations such as addition and subtraction. By integrating the Amazon Bedrock LLM, the agent leverages advanced natural language processing capabilities to understand and execute user requests.
+
+## Setup
+
+Before you begin, ensure you have the following prerequisites:
+
+- Node.js installed on your system.
+- An Amazon Web Services (AWS) account with access to Bedrock LLM.
+- The SpinAI package installed in your project. If not, you can install it using npm:
+
+```bash
+npm install spinai
+```
+
+- Configure your environment variables to include your AWS credentials and the endpoint for the Bedrock LLM service.
+
+## Implementation
+
+To implement the calculator agent, follow these steps:
+
+1. **Import Dependencies**: First, import the necessary modules from the SpinAI package and other dependencies.
+
+```typescript
+import { createAgent, createBedrockLLM } from "spinai";
+import * as dotenv from "dotenv";
+import { sum } from "./actions/sum";
+import { minus } from "./actions/minus";
+```
+
+2. **Configure the Bedrock LLM**: Initialize the Bedrock LLM with your model of choice. In this example, we use the "amazon.nova-micro-v1:0" model.
+
+```typescript
+const llm = createBedrockLLM({
+  model: "amazon.nova-micro-v1:0"
+});
+```
+
+3. **Define Actions**: Define the actions your agent can perform. In this case, we have two actions: `sum` and `minus`, which are functions to add and subtract numbers, respectively.
+
+4. **Create the Agent**: Use the `createAgent` function to create your calculator agent. Specify the instructions and actions for the agent.
+
+```typescript
+const calculatorAgent = createAgent<number>({
+  instructions: `You are a calculator agent that helps users perform mathematical calculations.`,
+  actions: [sum, minus],
+});
+```
+
+5. **Environment Configuration**: Load your environment variables using `dotenv.config()`.
+
+```typescript
+dotenv.config();
+```
+
+## Running the Example
+
+To run your calculator agent, execute the following command in your terminal:
+
+```bash
+node src/index.ts
+```
+
+Ensure that your actions (`sum` and `minus`) and the Bedrock LLM configuration are correctly set up. The agent will process input requests and use the Bedrock LLM to understand and perform calculations based on the user's instructions.
+
+## Complete source code for the calculator agent
+
+The complete source code for the calculator agent is shown below. This includes the setup for the Bedrock LLM, the agent creation, and the action functions for performing calculations.
+
+```typescript
+import { createAgent, createBedrockLLM } from "spinai";
+import * as dotenv from "dotenv";
+import { sum } from "./actions/sum";
+import { minus } from "./actions/minus";
+
+dotenv.config();
+
+const llm = createBedrockLLM({
+  model: "amazon.nova-micro-v1:0"
+});
+
+const calculatorAgent = createAgent<number>({
+  instructions: `You are a calculator agent that helps users perform mathematical calculations.`,
+  actions: [sum, minus],
+});
+```
+
+This example demonstrates the power and flexibility of using Amazon Bedrock LLM with the SpinAI package to create intelligent agents capable of understanding and executing complex tasks in natural language.
