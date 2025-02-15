@@ -1,3 +1,4 @@
+export { createGeminiLLM } from "./llms/gemini";
 export { createOpenAILLM } from "./llms/openai";
 export { createAnthropicLLM } from "./llms/anthropic";
 export { createAgent } from "./agents/create";

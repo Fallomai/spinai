@@ -43,6 +43,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.33.1",
+    "@google/generative-ai": "^0.21.0",
     "openai": "^4.77.0",
     "tsup": "^8.3.5",
     "uuid": "^9.0.0"
