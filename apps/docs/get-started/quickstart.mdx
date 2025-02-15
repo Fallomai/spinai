@@ -1,6 +1,6 @@
 ---
 title: "Quickstart"
-description: "Create your first AI agent in minutes"
+description: "Create your first AI agent in minutes, now including the Gemini model"
 ---
 
 ## Create a New Project
@@ -13,11 +13,32 @@ npx create-spinai
 
 ## Configure Environment
 
-Create a `.env` file with your OpenAI API key:
+Create a `.env` file in your project root. You can now choose between using OpenAI or the new Gemini model for your AI agent. For Gemini, you'll need a Google Generative AI API key:
 
 ```bash
-OPENAI_API_KEY=your_api_key_here
+# For OpenAI
+OPENAI_API_KEY=your_openai_api_key_here
+
+# For Gemini
+GEMINI_API_KEY=your_gemini_api_key_here
 ```
+
+## Update Agent Configuration
+
+Depending on your choice of AI model, update your agent's configuration to use either OpenAI or Gemini. Here's how you can set up your agent to use the Gemini model:
+
+```typescript
+import { createGeminiLLM } from '@your_project/spinai/llms/gemini';
+
+const geminiConfig = {
+  apiKey: process.env.GEMINI_API_KEY,
+  model: 'gemini-2.0-flash', // Optional: specify the Gemini model version
+};
+
+const geminiAgent = createGeminiLLM(geminiConfig);
+```
+
+Ensure this configuration is applied where your agent is initialized.
 
 ## Run Your Agent
 
@@ -29,18 +50,25 @@ npm run dev
 
 That's it! Your agent will now:
 
-1. Receive the user's question
-2. Decide to use the getWeather action
-3. Execute the action
-4. Provide a response
+1. Receive the user's question.
+2. Decide to use the configured action (e.g., getWeather for OpenAI or a custom action for Gemini).
+3. Execute the action.
+4. Provide a response.
 
 ## Next Steps
 
+Explore further documentation and examples to enhance your AI agent:
+
 <CardGroup>
   <Card title="Development Guide" icon="code" href="/get-started/development">
-    Learn how to build more complex agents
+    Learn how to build more complex agents with either OpenAI or Gemini.
+  </Card>
+  <Card title="Gemini Model" icon="rocket" href="/llms/gemini">
+    Dive deeper into using the Gemini model in your projects.
   </Card>
   <Card title="Examples" icon="lightbulb" href="/examples">
-    See real-world examples
+    See real-world examples for both OpenAI and Gemini models.
   </Card>
 </CardGroup>
+
+This quickstart guide has been updated to help you seamlessly integrate the Gemini model into your SpinAI projects. For more detailed information on working with Gemini, refer to the dedicated [Gemini documentation](/llms/gemini).
