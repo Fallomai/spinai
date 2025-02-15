@@ -5,7 +5,7 @@ description: "AI agents that coordinate actions to achieve goals"
 
 # Agents
 
-Agents are the core building blocks of SpinAI. They combine LLMs with actions to solve tasks.
+Agents are the core building blocks of SpinAI. They combine LLMs (Large Language Models) with actions to solve tasks. With the addition of Amazon Bedrock LLMs, agents can now leverage a wider range of AI models for various applications.
 
 ## Quick Start
 
@@ -63,6 +63,36 @@ const { response } = await agent({
 | `sessionId`       | `string`              | Unique identifier for the conversation              |
 | `interactionId`   | `string`              | Unique identifier for this specific interaction     |
 | `state`           | `Record<string, any>` | Final state after execution                         |
+
+## Amazon Bedrock LLM Agents
+
+SpinAI now supports Amazon Bedrock LLMs, providing more flexibility and options for your agents. To use Amazon Bedrock LLMs, you can initialize your LLM as follows:
+
+```typescript
+import { createAgent, createBedrockLLM } from "spinai";
+
+// Initialize your Bedrock LLM
+const llm = createBedrockLLM({
+  region: "us-west-2",
+  access_key: process.env.AWS_ACCESS_KEY_ID,
+  secret_key: process.env.AWS_SECRET_ACCESS_KEY,
+  model: "your-model-name", // Optional: Defaults to a general-purpose model
+});
+
+// Create an agent with Bedrock LLM
+const agent = createAgent({
+  instructions: "You are a knowledgeable assistant",
+  actions: [/* your actions here */],
+  llm,
+});
+
+// Use the agent
+const { response } = await agent({
+  input: "Explain quantum computing",
+});
+```
+
+This integration allows for the use of Amazon Bedrock's powerful models in your SpinAI agents, enabling a wide range of new applications and capabilities.
 
 ## Use Cases
 
