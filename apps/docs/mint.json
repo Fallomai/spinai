@@ -61,7 +61,12 @@
     },
     {
       "group": "Agent LLMs",
-      "pages": ["llms/overview", "llms/openai", "llms/anthropic"]
+      "pages": [
+        "llms/overview",
+        "llms/openai",
+        "llms/anthropic",
+        "llms/gemini"
+      ]
     },
     {
       "group": "Examples",

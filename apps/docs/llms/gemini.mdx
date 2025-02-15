@@ -1,0 +1,101 @@
+---
+title: "Integrating Google's Gemini Model"
+description: "Learn how to integrate and utilize Google's Gemini model with SpinAI for advanced generative AI capabilities."
+---
+
+## Introduction
+
+Google's Gemini model represents a significant advancement in generative AI, offering powerful capabilities for generating text-based content. This documentation provides a comprehensive guide on how to integrate the Gemini model into your projects using SpinAI. With Gemini, developers can leverage Google's cutting-edge AI to enhance applications with features such as content generation, chatbots, and more.
+
+## Setup and Configuration
+
+To begin using the Gemini model with SpinAI, you'll need to configure your environment and create an instance of the Gemini language learning model (LLM).
+
+```typescript
+import { createGeminiLLM } from "spinai";
+
+const geminiLLM = createGeminiLLM({
+  apiKey: process.env.GOOGLE_API_KEY, // Your Google API key
+  model: "gemini-2.0-flash", // Optional, defaults to gemini-2.0-flash
+});
+```
+
+### Configuration Options
+
+The `GeminiConfig` interface allows you to specify the following options:
+
+```typescript
+interface GeminiConfig {
+  apiKey: string; // Your Google API key
+  model?: string; // The model version, defaults to "gemini-2.0-flash"
+}
+```
+
+## API Reference
+
+### `createGeminiLLM(config: GeminiConfig): LLM`
+
+Creates and returns an instance of the Gemini language learning model.
+
+- **Parameters:**
+  - `config`: An object containing your API key and optionally the model version.
+- **Returns:** An instance of `LLM` configured to use the Gemini model.
+
+### Completion Options
+
+When calling the `complete` method on the Gemini LLM instance, you can specify the following options:
+
+```typescript
+interface CompletionOptions {
+  prompt: string; // The input text prompt
+  schema?: any; // Optional schema for structured output
+  temperature?: number; // Optional, controls randomness
+  maxTokens?: number; // Optional, maximum length of the generated content
+}
+```
+
+## Examples
+
+### Basic Gemini Model Integration
+
+This example demonstrates how to generate text content using the Gemini model.
+
+```typescript
+const result = await geminiLLM.complete({
+  prompt: "Write a brief introduction to the Gemini model.",
+  maxTokens: 100,
+});
+
+console.log(result.content);
+```
+
+### Advanced Usage Scenarios
+
+For applications requiring structured output, you can specify a schema to parse the generated content.
+
+```typescript
+const result = await geminiLLM.complete({
+  prompt: "Explain the benefits of using generative AI in healthcare.",
+  schema: {
+    response: String,
+    reasoning: String,
+    actions: Array,
+  },
+  maxTokens: 200,
+});
+
+console.log(result.content);
+```
+
+## Best Practices
+
+- **API Key Security:** Ensure your Google API key is stored securely and not hardcoded in your application code.
+- **Token Management:** Be mindful of the `maxTokens` parameter to manage usage and associated costs effectively.
+- **Error Handling:** Implement robust error handling to manage scenarios where the Gemini model may not return a response.
+
+## Troubleshooting
+
+- **API Key Issues:** If you encounter authentication errors, verify that your API key is correct and has the necessary permissions.
+- **Model Responses:** For issues with unexpected model responses, review your prompt and completion options to ensure they are correctly configured.
+
+For further assistance, refer to the Google Gemini model documentation or contact SpinAI support.
