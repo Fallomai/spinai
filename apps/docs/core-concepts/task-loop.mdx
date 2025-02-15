@@ -1,6 +1,6 @@
 ---
 title: "Task Loop"
-description: "How SpinAI agents make and execute decisions"
+description: "How SpinAI agents make and execute decisions, including the integration of Gemini for dynamic content generation."
 ---
 
 ## What is the Task Loop?
@@ -54,6 +54,35 @@ The task loop is SpinAI's core decision-making process that:
    3. Updates the state
    4. Returns the modified context
    ```
+
+## Integrating Gemini in Task Loops
+
+With the addition of Gemini to SpinAI's suite of language learning models (LLMs), you can now leverage Google's Gemini for generating dynamic content within your task loops. This integration allows for more nuanced and contextually relevant responses, enhancing the decision-making capabilities of your SpinAI agents.
+
+### Using Gemini for Dynamic Content Generation
+
+To use Gemini within a task loop, you first need to create a Gemini LLM instance. This instance can then be used to generate content based on the current context of the task loop, providing tailored responses or actions.
+
+```typescript
+import { createGeminiLLM } from 'spinai';
+
+const gemini = createGeminiLLM({
+  apiKey: 'your_api_key_here',
+  model: 'gemini-2.0-flash', // Optional: specify the model
+});
+
+async function generateContent(prompt: string) {
+  const result = await gemini.complete({
+    prompt,
+    maxTokens: 1024,
+    temperature: 0.7,
+  });
+
+  console.log(result.content); // Processed content
+}
+```
+
+This example demonstrates how to initialize the Gemini LLM and request content generation, which can be integrated into any part of the task loop where dynamic, AI-generated content is beneficial.
 
 ## Decision Flow
 
