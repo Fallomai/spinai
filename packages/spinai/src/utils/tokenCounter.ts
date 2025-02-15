@@ -22,6 +22,16 @@ const MODEL_COSTS = {
   "claude-2.1": { input: 8, output: 24 },
   "claude-2.0": { input: 8, output: 24 },
   "claude-instant-1.2": { input: 0.8, output: 2.4 },
+
+  // Cloudflare AI Models
+  "@cf/meta/llama-2-7b-chat-int8": { input: 0.2, output: 0.4 },
+  "@cf/meta/llama-2-13b-chat-int8": { input: 0.4, output: 0.8 },
+  "@cf/meta/llama-2-70b-chat-int8": { input: 1.0, output: 2.0 },
+  "@cf/mistral/mistral-7b-instruct-v0.1": { input: 0.2, output: 0.4 },
+  "@cf/tiiuae/falcon-7b-instruct": { input: 0.2, output: 0.4 },
+  "@cf/anthropic/claude-instant-1.2": { input: 0.8, output: 2.4 },
+  "@cf/anthropic/claude-2.1": { input: 8.0, output: 24.0 },
+  "custom-http-model": { input: 0.5, output: 1.5 },
 } as const;
 
 type ModelId = keyof typeof MODEL_COSTS;
