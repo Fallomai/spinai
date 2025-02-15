@@ -1,0 +1,106 @@
+---
+title: "Using Gemini with SpinAI"
+description: "Learn how to integrate and utilize the Gemini model in your SpinAI projects for advanced content generation."
+---
+
+## Introduction
+
+The Gemini model, powered by Google Generative AI, is now supported within the SpinAI package, offering a new level of content generation capabilities. This documentation will guide you through setting up the Gemini model, configuring it for your needs, and generating content effectively.
+
+## Setup and Configuration
+
+To get started with the Gemini model in SpinAI, you need to configure the model with your API key and optionally specify the model version you wish to use.
+
+```typescript
+import { createGeminiLLM } from "spinai";
+
+const geminiLLM = createGeminiLLM({
+  apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY, // Your API key
+  model: "gemini-2.0-flash", // Optional, defaults to "gemini-2.0-flash"
+});
+```
+
+## Generating Content
+
+Once the Gemini model is configured, you can generate content by providing a prompt, setting the temperature for creativity, and specifying the maximum number of tokens to generate.
+
+```typescript
+const options = {
+  prompt: "Explain the concept of relativity.",
+  temperature: 0.7, // Optional, defaults to 0.7
+  maxTokens: 512, // Optional
+};
+
+geminiLLM.complete(options).then((result) => {
+  console.log(result.content); // The generated content
+});
+```
+
+## API Reference
+
+### `createGeminiLLM(config: GeminiConfig): LLM`
+
+Creates and returns a Gemini model instance for content generation.
+
+#### Parameters
+
+- `config: GeminiConfig` - Configuration object for the Gemini model.
+  - `apiKey: string` - Your API key for Google Generative AI.
+  - `model?: string` - The model version, defaults to "gemini-2.0-flash".
+
+#### Returns
+
+- `LLM` - An instance of the Gemini model ready for generating content.
+
+## Examples
+
+### Basic Gemini model integration
+
+```typescript
+import { createGeminiLLM } from "spinai";
+
+const geminiLLM = createGeminiLLM({
+  apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
+});
+
+geminiLLM.complete({
+  prompt: "Describe the benefits of AI in education.",
+}).then((result) => {
+  console.log(result.content);
+});
+```
+
+### Advanced content generation with Gemini
+
+```typescript
+import { createGeminiLLM } from "spinai";
+
+const geminiLLM = createGeminiLLM({
+  apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
+  model: "gemini-2.0-flash",
+});
+
+const options = {
+  prompt: "Write a short story about a robot learning to love.",
+  temperature: 0.9,
+  maxTokens: 1024,
+};
+
+geminiLLM.complete(options).then((result) => {
+  console.log(result.content);
+});
+```
+
+## Best Practices
+
+- **Prompt Engineering**: Spend time crafting your prompts. The quality of the prompt significantly influences the quality of the generated content.
+- **Temperature Settings**: Adjust the temperature based on the creativity level you desire. A lower temperature results in more deterministic outputs, while a higher temperature encourages creativity.
+- **Token Management**: Be mindful of the maxTokens parameter to balance between the completeness of the content and operational costs.
+
+## Troubleshooting
+
+- **API Key Issues**: Ensure your API key is valid and has not exceeded its quota.
+- **Model Responses**: If the model returns unexpected results, review your prompt and temperature settings. Adjusting these can often lead to better outcomes.
+- **Schema Mismatches**: When using a schema, ensure your expected output structure matches the model's output. Misalignments can result in errors or unexpected results.
+
+For further assistance, refer to the official Google Generative AI documentation or contact SpinAI support.
