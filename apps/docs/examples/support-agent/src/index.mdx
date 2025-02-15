@@ -1,0 +1,48 @@
+---
+title: "Support Agent with Amazon Bedrock"
+description: "Learn how to integrate Amazon Bedrock LLMs into a support-agent application for enhanced customer support."
+---
+
+## Introduction
+
+This documentation provides an overview and guide on integrating Amazon Bedrock Large Language Models (LLMs) into a support-agent application. By leveraging Amazon Bedrock, you can enhance your customer support capabilities with advanced natural language processing features. This example focuses on the implementation details and steps required to run the example in your environment.
+
+## Implementation Details
+
+To integrate Amazon Bedrock LLMs into your support-agent application, you need to use the `createBedrockLLM` function. This function initializes the Bedrock model with the specified configuration. Below is an example of how to set up the Bedrock LLM with a specific model.
+
+```typescript
+// Import the necessary function from your LLM library
+import { createBedrockLLM } from 'your-llm-library';
+
+// Bedrock Example:
+const llm = createBedrockLLM({
+  model: "amazon.nova-micro-v1:0"
+});
+```
+
+In this example, the `createBedrockLLM` function is used to initialize a Bedrock LLM with the `amazon.nova-micro-v1:0` model. This model is just an example, and you should replace it with the model that best suits your application's needs.
+
+### SupportResponse Interface
+
+The `SupportResponse` interface is used to structure the response from the support agent. It includes fields for `nextBilling` and `subscriptionType`, which are typical inquiries in a support context.
+
+```typescript
+interface SupportResponse {
+  nextBilling: string;
+  subscriptionType: string;
+}
+```
+
+This interface ensures that the responses from your support agent are consistent and structured, facilitating easier processing and integration with other parts of your application.
+
+## Running the Example
+
+To run this example in your environment, follow these steps:
+
+1. Ensure you have the necessary libraries installed in your project. This includes the library for Amazon Bedrock LLM integration.
+2. Replace the placeholder model in the `createBedrockLLM` function with the model you intend to use.
+3. Implement the `SupportResponse` interface to structure the support agent's responses.
+4. Test the integration by invoking the support agent with various inquiries to see how the Bedrock LLM responds.
+
+By following these steps, you can integrate Amazon Bedrock LLMs into your support-agent application, enhancing its ability to understand and respond to customer inquiries with high accuracy and efficiency.
