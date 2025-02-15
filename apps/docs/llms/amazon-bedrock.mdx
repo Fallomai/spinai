@@ -1,0 +1,109 @@
+---
+title: "Integrating Amazon Bedrock with SpinAI"
+description: "Learn how to integrate Amazon Bedrock LLMs with SpinAI for enhanced AI capabilities."
+---
+
+## Introduction
+
+Amazon Bedrock provides a suite of large language models (LLMs) that can be leveraged to enhance applications with advanced AI capabilities. This documentation outlines how to integrate Amazon Bedrock LLMs with the SpinAI package, enabling developers to utilize these powerful models within their SpinAI agents.
+
+## Setup and Configuration
+
+To begin using Amazon Bedrock LLMs with SpinAI, you must first configure the `BedrockConfig` object. This involves specifying your AWS credentials and, optionally, the desired model and region.
+
+```typescript
+import { createBedrockLLM } from "spinai";
+
+const bedrockLLM = createBedrockLLM({
+  access_key: process.env.AWS_ACCESS_KEY_ID,
+  secret_key: process.env.AWS_SECRET_ACCESS_KEY,
+  region: "us-west-2", // Optional, defaults to us-west-2
+  model: "anthropic.claude-3-5-sonnet-20240620-v1:0", // Optional, defaults to anthropic.claude-3-5-sonnet-20240620-v1:0
+});
+```
+
+### Configuration Options
+
+```typescript
+interface BedrockConfig {
+  region?: string; // AWS region, optional
+  access_key?: string; // AWS access key
+  secret_key?: string; // AWS secret key
+  profile?: string; // AWS profile, optional if using credentials file
+  model?: string; // Model ID, optional
+}
+```
+
+## Examples
+
+### Integrating Amazon Bedrock LLMs with calculator-agent
+
+This example demonstrates how to integrate Amazon Bedrock LLMs with a calculator-agent, enabling it to perform complex calculations through natural language processing.
+
+```typescript
+import { createAgent } from "spinai";
+import { createBedrockLLM } from "spinai";
+
+const bedrockLLM = createBedrockLLM({
+  access_key: process.env.AWS_ACCESS_KEY_ID,
+  secret_key: process.env.AWS_SECRET_ACCESS_KEY,
+  model: "anthropic.claude-3-5-sonnet-20240620-v1:0",
+});
+
+const calculatorAgent = createAgent({
+  instructions: "Calculate complex mathematical expressions",
+  actions: [calculateExpression],
+  llm: bedrockLLM,
+});
+
+async function calculateExpression(expression: string) {
+  const result = await bedrockLLM.complete({
+    prompt: `Calculate: ${expression}`,
+    maxTokens: 64,
+  });
+  console.log(result.content); // Output the calculation result
+}
+```
+
+### Integrating Amazon Bedrock LLMs with support-agent
+
+This example shows how to integrate Amazon Bedrock LLMs with a support-agent, enhancing its ability to understand and respond to customer inquiries.
+
+```typescript
+import { createAgent } from "spinai";
+import { createBedrockLLM } from "spinai";
+
+const bedrockLLM = createBedrockLLM({
+  access_key: process.env.AWS_ACCESS_KEY_ID,
+  secret_key: process.env.AWS_SECRET_ACCESS_KEY,
+  model: "anthropic.claude-3-5-sonnet-20240620-v1:0",
+});
+
+const supportAgent = createAgent({
+  instructions: "Assist users with their inquiries",
+  actions: [provideSupport],
+  llm: bedrockLLM,
+});
+
+async function provideSupport(inquiry: string) {
+  const response = await bedrockLLM.complete({
+    prompt: `Support inquiry: ${inquiry}`,
+    maxTokens: 256,
+  });
+  console.log(response.content); // Output the support response
+}
+```
+
+## Best Practices
+
+- **Security:** Ensure your AWS credentials are securely stored and not hard-coded into your application.
+- **Model Selection:** Choose the model that best fits your application's needs. Amazon Bedrock offers a variety of models tailored for different tasks.
+- **Error Handling:** Implement comprehensive error handling to manage and respond to any issues that may arise during the interaction with Amazon Bedrock LLMs.
+
+## Limitations and Considerations
+
+- **Cost:** Be aware of the costs associated with using Amazon Bedrock LLMs, as pricing varies based on the model and usage.
+- **AWS Region:** Ensure the AWS region you select supports the Amazon Bedrock models you intend to use.
+- **Data Privacy:** Consider the privacy implications of the data being processed by Amazon Bedrock LLMs, especially if handling sensitive or personal information.
+
+For more information on Amazon Bedrock LLMs and their capabilities, please refer to the official Amazon Bedrock documentation.
