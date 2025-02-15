@@ -19,6 +19,39 @@ Create a `.env` file with your OpenAI API key:
 OPENAI_API_KEY=your_api_key_here
 ```
 
+{/* Add Amazon Bedrock LLM support */}
+## Adding Amazon Bedrock LLM Support
+
+To integrate Amazon Bedrock LLM into your project, you'll need to install additional dependencies and configure your environment for AWS credentials.
+
+### Install Dependencies
+
+Ensure your project includes the necessary AWS SDK packages for Bedrock support. Update your `package.json` to include:
+
+```diff
+@@ -43,6 +43,8 @@
+   },
+   "dependencies": {
+     "@anthropic-ai/sdk": "^0.33.1",
++    "@aws-sdk/client-bedrock-runtime": "^3.744.0",
++    "@aws-sdk/credential-providers": "^3.749.0",
+     "openai": "^4.77.0",
+     "tsup": "^8.3.5",
+     "uuid": "^9.0.0"
+```
+
+### Configure AWS Credentials
+
+For AWS Bedrock to authenticate your requests, set up your AWS credentials in the `.env` file:
+
+```bash
+AWS_ACCESS_KEY_ID=your_access_key_id_here
+AWS_SECRET_ACCESS_KEY=your_secret_access_key_here
+AWS_REGION=your_aws_region_here
+```
+
+Ensure you replace `your_access_key_id_here`, `your_secret_access_key_here`, and `your_aws_region_here` with your actual AWS credentials and preferred region.
+
 ## Run Your Agent
 
 Start your agent:
@@ -30,7 +63,7 @@ npm run dev
 That's it! Your agent will now:
 
 1. Receive the user's question
-2. Decide to use the getWeather action
+2. Decide to use the getWeather action or leverage Amazon Bedrock LLM based on the configuration
 3. Execute the action
 4. Provide a response
 
