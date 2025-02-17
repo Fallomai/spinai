@@ -69,7 +69,8 @@
         "llms/bedrock",
         "llms/cloudflare",
         "llms/http",
-        "llms/gemini"
+        "llms/gemini",
+        "llms/xAi"
       ]
     },
     {
@@ -77,7 +78,9 @@
       "pages": [
         {
           "group": "Calculator agent (beginners)",
-          "pages": ["examples/calculator-agent/overview"]
+          "pages": [
+            "examples/calculator-agent/overview"
+          ]
         }
       ]
     }

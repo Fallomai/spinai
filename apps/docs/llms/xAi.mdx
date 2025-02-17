@@ -1,0 +1,90 @@
+---
+title: "Integrating External AI Services with xAI"
+description: "A comprehensive guide for developers on integrating and utilizing the xAI module for external AI services."
+---
+
+## Introduction
+
+The `xAI` module provides a seamless integration point for developers looking to leverage external AI services within their applications. This guide covers the setup and configuration process, creating an AI language model instance, performing completions, schema-based formatting, calculating usage costs, and includes best practices and troubleshooting tips.
+
+## Setup and Configuration
+
+Before you can start using the `xAI` module, you need to configure it with your API key and optionally specify a model. The default model used is `"grok-2-1212"`.
+
+```typescript
+import { createXAILLM } from "spinai/llms/xAi";
+
+const config = {
+  apiKey: "your_api_key_here",
+  model: "optional_model_name", // Default is "grok-2-1212"
+};
+```
+
+## Creating an AI Language Model Instance
+
+To interact with the AI services, you first need to create an instance of the AI language model using the `createXAILLM` function. This instance will be used to perform completions and other AI-related tasks.
+
+```typescript
+const llm = createXAILLM(config);
+```
+
+## Performing Completions
+
+Once you have an AI language model instance, you can perform completions by providing a prompt, temperature, max tokens, and optionally a schema for structured responses.
+
+```typescript
+const completionOptions = {
+  prompt: "Your prompt here",
+  temperature: 0.7, // Optional
+  maxTokens: 150, // Optional
+  schema: { /* Schema for structured responses */ }, // Optional
+};
+
+const result = await llm.complete(completionOptions);
+console.log(result.content); // The AI-generated content
+```
+
+## Schema-based Formatting
+
+For applications requiring structured output, you can specify a schema when performing completions. The schema allows the AI to format its response according to your specifications.
+
+```typescript
+const schemaCompletionOptions = {
+  prompt: "Your prompt here",
+  schema: {
+    type: "json_object",
+    properties: {
+      // Define your schema here
+    },
+  },
+};
+
+const schemaResult = await llm.complete(schemaCompletionOptions);
+console.log(schemaResult.content); // Structured content according to your schema
+```
+
+## Calculating Usage Costs
+
+The `xAI` module provides functionality to calculate the cost of each completion based on the number of tokens used in the prompt and the completion.
+
+```typescript
+console.log(`Cost in cents: ${result.costCents}`);
+```
+
+## Best Practices
+
+- Always specify a maximum number of tokens to control the length of the AI's response and manage costs.
+- Use schema-based formatting for applications requiring structured output, ensuring consistent and predictable AI responses.
+- Monitor your API usage to avoid unexpected charges, especially when scaling your application.
+
+## Troubleshooting
+
+- **API Key Issues**: Ensure your API key is correct and has the necessary permissions.
+- **Model Not Found**: Verify the model name if you're specifying a model other than the default. Check for typos or incorrect model names.
+- **Schema Errors**: If using schema-based formatting, ensure your schema is correctly defined and matches the expected format.
+
+For further assistance, consult the API documentation or reach out to the support team of the external AI service you're integrating with.
+
+Related Documentation:
+
+- [Overview of Language Learning Models (LLMs)](/docs/llms/overview)
