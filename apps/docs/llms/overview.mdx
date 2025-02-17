@@ -11,6 +11,7 @@ SpinAI now supports multiple LLMs for agent decision making, expanding our offer
 - [Gemini](/llms/gemini)
 - [Cloudflare](/llms/cloudflare)
 - [HTTP-based LLM](/llms/http)
+- [xAI](/llms/xai)
 
 ## Choosing an LLM
 
@@ -22,9 +23,21 @@ Consider these factors when choosing an LLM:
 - Token context limits
 - Time to response
 
+## xAI: The Next Generation of AI
+
+The xAI module represents a significant advancement in LLM technology, offering unparalleled flexibility and efficiency. Powered by a unique architecture, xAI is designed to deliver high-quality responses with exceptional accuracy. This module is ideal for applications requiring advanced understanding and generation of human-like text.
+
+Key features of xAI include:
+
+- Customizable models to fit specific needs
+- Advanced schema-based response formatting
+- Efficient token usage for cost-effective operations
+
+For more detailed information on xAI and how to integrate it into your projects, please refer to our [xAI documentation](/llms/xai).
+
 ## Best Practices
 
-Usually, for the agent's LLM, you'll want to choose a model that's robust in it's decision making, can handle a decent amount of tokens (depending on your context), and can respond within a reasonable amount of time. Keep in mind, for each action you expect your agent to run, you can expect 1-2 calls to your agent's base LLM each time.
+Usually, for the agent's LLM, you'll want to choose a model that's robust in its decision making, can handle a decent amount of tokens (depending on your context), and can respond within a reasonable amount of time. Keep in mind, for each action you expect your agent to run, you can expect 1-2 calls to your agent's base LLM each time.
 
 If response times matter for your application, you might want to use a more lightweight model under the hood.
 
