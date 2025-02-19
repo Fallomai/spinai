@@ -1,6 +1,6 @@
 ---
 title: "Task Loop"
-description: "How SpinAI agents make and execute decisions"
+description: "How SpinAI agents make and execute decisions, including detailed action execution timing"
 ---
 
 ## What is the Task Loop?
@@ -47,6 +47,15 @@ graph TD
     C -->|No| F[Generate Final Response]
 ```
 
+## Detailed Action Execution Timing
+
+The task loop has been enhanced to provide more detailed timing around action execution. This includes:
+
+- **Entire Action Duration**: Measures the total time from the start of action preparation to the completion of the action execution. This is useful for understanding the overhead of parameter preparation and any cleanup that might be necessary after the action runs.
+- **Action Execution Duration**: Specifically measures the time taken to execute the action itself, excluding preparation and cleanup. This metric is crucial for optimizing the performance of individual actions.
+
+These timings help in identifying performance bottlenecks and understanding the overhead introduced by parameter preparation and action execution.
+
 ## Example Flow
 
 ```typescript
@@ -73,6 +82,21 @@ const result = await agent({
 // - Return result to user
 ```
 
+## Example showing how to measure and interpret action execution timing
+
+```typescript
+// Assuming an action "sum" is defined
+const actionStartTime = Date.now();
+
+// Execute the "sum" action
+const context = await action.run(context, { a: 5, b: 3 });
+
+const actionDuration = Date.now() - actionStartTime;
+console.log(`Action execution time: ${actionDuration}ms`);
+```
+
+This example demonstrates how to measure the execution time of an action, which is crucial for performance analysis and optimization.
+
 ## Next Steps
 
 <CardGroup>
@@ -87,3 +111,7 @@ const result = await agent({
     Understand state management
   </Card>
 </CardGroup>
+
+Related Documentation:
+- [Actions](/core-concepts/actions)
+- [Observability](/core-concepts/observability)
