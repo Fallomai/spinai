@@ -1,6 +1,6 @@
 ---
 title: "Actions"
-description: "Building blocks of SpinAI agents"
+description: "Building blocks of SpinAI agents, now with enhanced formatting and duplicate execution checks"
 ---
 
 ## What are Actions?
@@ -38,6 +38,21 @@ export const minus = createAction({
   },
 });
 ```
+
+## Enhanced Action Formatting
+
+The formatting for available actions has been enhanced to include dependencies, providing a clearer overview of each action's requirements:
+
+```typescript
+// Newly formatted action listing
+{
+  id: "minus",
+  description: "Subtracts two numbers from each other",
+  dependencies: ["validateInput"]
+}
+```
+
+This format helps in understanding the action's dependencies at a glance, making it easier to manage complex workflows.
 
 ## Action Configuration
 

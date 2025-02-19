@@ -1,0 +1,85 @@
+---
+title: Advanced Logging Examples
+description: A comprehensive guide to implementing and utilizing advanced logging features in SpinAI, including expanded logging types and debug logging conditions.
+---
+
+## Introduction
+
+In modern application development, logging is a critical component for monitoring, debugging, and ensuring the reliability of systems. SpinAI has expanded its logging capabilities to provide developers with more granular control and insights into their applications. This document covers the advanced logging features introduced in the latest updates, including expanded logging types and configurable debug logging conditions.
+
+## Setup
+
+Before diving into the advanced logging features, ensure your SpinAI environment is set up correctly. This involves installing the SpinAI package and configuring the basic logging settings. For detailed setup instructions, refer to the initial setup documentation.
+
+## Using Expanded Logging Types
+
+The recent update introduces an expanded set of logging types in the `ExecutedActionSummary` interface, providing a more detailed overview of action execution outcomes. Here's a breakdown of the changes:
+
+```typescript
+interface ExecutedActionSummary {
+  id: string;
+  parameters?: Record<string, unknown>;
+  result?: unknown;
+  status: "success" | "error" | "max_retries_exceeded"; // Expanded logging types
+  errorMessage?: string;
+  retryCount?: number; // New field to track retry attempts
+  timestamp: number; // New field to log the action execution timestamp
+}
+```
+
+### Example: Logging an Executed Action
+
+To utilize the expanded logging types, you can create a logging function that captures detailed information about each executed action, including its status, retry count, and timestamp.
+
+```typescript
+function logExecutedAction(action: ExecutedActionSummary) {
+  console.log(`Action ID: ${action.id}, Status: ${action.status}, Retry Count: ${action.retryCount}, Timestamp: ${action.timestamp}`);
+}
+```
+
+## Configuring Debug Logging
+
+The `debugLogger` utility has been enhanced to allow more flexible debug logging configurations. This is particularly useful for filtering logs based on specific conditions or log levels.
+
+### Changes in Debug Logging Conditions
+
+The following change has been made to the `formatSummaryMetrics` function within `debugLogger`:
+
+```typescript
+function formatSummaryMetrics(data?: Record<string, unknown>): string {
+  // Additional condition to check debugMode before logging executed actions
+  if (debugMode !== "default" && data.executedActions && Array.isArray(data.executedActions)) {
+    // Logic to log executed actions
+  }
+}
+```
+
+### Example: Configuring Conditional Debug Logging
+
+To configure conditional debug logging, you can set the `debugMode` based on your requirements (e.g., logging only errors or specific actions).
+
+```typescript
+import { setDebugMode } from 'spinai/debugLogger';
+
+// Set debug mode to log only non-default actions
+setDebugMode('non-default');
+
+// Your application logic here
+```
+
+## Best Practices
+
+When implementing advanced logging in your application, consider the following best practices:
+
+- **Selective Logging:** Only log information that is useful for debugging or monitoring your application. Excessive logging can lead to performance issues and log noise.
+- **Sensitive Information:** Be cautious about logging sensitive information. Always sanitize logs to remove or obfuscate personal data or credentials.
+- **Consistent Logging Format:** Use a consistent format for log messages to make it easier to search and analyze logs.
+- **Log Rotation and Retention:** Implement log rotation and retention policies to manage log file sizes and ensure that logs are available for a sufficient period.
+
+## Full Example Project Setup with Advanced Logging Configurations
+
+To see a full example project that incorporates these advanced logging configurations, refer to the SpinAI GitHub repository. The example project demonstrates how to set up a SpinAI application with detailed action logging, conditional debug logging, and best practices for log management.
+
+For more detailed information on observability and logging in SpinAI, refer to the upcoming `core-concepts/observability.mdx` documentation.
+
+By leveraging these advanced logging features, developers can gain deeper insights into their SpinAI applications, leading to improved debugging, monitoring, and overall application reliability.
