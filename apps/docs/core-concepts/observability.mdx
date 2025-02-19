@@ -1,9 +1,9 @@
 ---
 title: "Observability & Logging"
-description: "Monitor and debug your AI agents with built-in observability features"
+description: "Monitor and debug your AI agents with expanded logging features, refined action execution tracking, and improved debug logging conditions."
 ---
 
-SpinAI provides built-in observability features to help you monitor and debug your AI agents. By enabling logging, you can track agent interactions, performance metrics, and costs in real-time through the SpinAI dashboard.
+SpinAI provides built-in observability features to help you monitor and debug your AI agents. With the latest updates, we've expanded the types of logs available, refined how action executions are tracked, and improved conditions under which debug logs are generated. These enhancements allow for a more detailed and nuanced understanding of your agents' performance and behavior.
 
 ## Getting Started
 
@@ -26,17 +26,17 @@ const agent = createAgent({
 });
 ```
 
-## What's Being Tracked
+## Expanded Logging Types
 
-When observability is enabled, SpinAI automatically tracks:
+With the latest update, SpinAI now supports an additional logging type: `max_retries_exceeded`. This is crucial for understanding when an action has failed to execute successfully after all retry attempts have been exhausted. The logging structure has also been enhanced to include `retryCount` and a `timestamp` for each executed action, providing more granular insights into the execution flow and timing.
 
-- Agent interactions and their outcomes
-- Model usage and token consumption
-- Cost metrics per interaction
-- Response times and latency
-- Evaluation steps and reasoning
-- Action executions and their results
-- Errors and failure cases
+## Refined Action Execution Tracking
+
+Action execution tracking has been refined to offer more detailed insights. The `ExecutedActionSummary` now includes a `retryCount`, which indicates how many times an action was retried before reaching its final status. Additionally, the `finalState` of an interaction has been generalized to support any type, allowing for more flexibility in how final states are represented and logged.
+
+## Improved Debug Logging Conditions
+
+Debug logging conditions have been improved to ensure that debug logs are generated only when necessary, reducing noise and making it easier to identify relevant information. Debug logs related to action executions are now generated based on the debug mode setting, ensuring that logs are only produced when the debug mode is set to a level that warrants such detailed logging.
 
 ## Viewing Logs
 
@@ -48,3 +48,51 @@ Visit [app.spinai.dev](https://app.spinai.dev) to view your agent logs and metri
 - Error tracking and debugging tools
 
 All interactions are grouped by agent ID, making it easy to monitor specific agents or use cases within your application.
+
+## Examples
+
+### Examples of New Logging Types in Use
+
+When an action exceeds the maximum number of retries, the log entry will reflect this status, along with the number of attempts made:
+
+```typescript
+{
+  id: "action-id",
+  status: "max_retries_exceeded",
+  retryCount: 3,
+  timestamp: 1622547600000,
+}
+```
+
+### How to Track Action Execution More Effectively
+
+By examining the `retryCount` and `timestamp` in the `ExecutedActionSummary`, developers can gain insights into the resilience and timing of action executions:
+
+```typescript
+{
+  interactionId: "interaction-id",
+  executedActions: [
+    {
+      id: "action-id",
+      status: "success",
+      retryCount: 1,
+      timestamp: 1622547600000,
+    }
+  ],
+  finalResponse: "Your ticket has been created.",
+  finalState: { ticketId: "12345" },
+}
+```
+
+### Configuring Debug Logging Conditions
+
+To adjust when debug logs are generated, you can change the debug mode setting in your agent configuration. This ensures that detailed execution logs are only produced when you need them, helping to keep your log files clean and focused on relevant information.
+
+```typescript
+const agent = createAgent({
+  debugMode: "verbose", // Set debug mode to control logging verbosity
+  // Other configuration options...
+});
+```
+
+By leveraging these updated observability features, developers can more effectively monitor, debug, and optimize their AI agents, leading to improved performance and reliability.
