@@ -1,0 +1,88 @@
+---
+title: "Using xAI in SpinAI"
+description: "Learn how to integrate and utilize the xAI LLM with SpinAI for advanced language model capabilities."
+---
+
+## Introduction
+
+The xAI LLM is a cutting-edge language model that provides advanced capabilities for generating text, understanding natural language, and more. This documentation will guide you through integrating the xAI LLM with SpinAI, enabling you to leverage its powerful features in your projects.
+
+## Getting Started
+
+Before you can start using the xAI LLM with SpinAI, you need to ensure that you have an API key from xAI. This key is essential for authenticating your requests to the xAI services.
+
+## Integration with SpinAI
+
+Integrating the xAI LLM into your SpinAI project involves creating an instance of the LLM with your xAI API key and optional model configuration. The following steps outline the process:
+
+```typescript
+import { createXAILLM } from "spinai";
+
+const llm = createXAILLM({
+  apiKey: process.env.XAI_API_KEY, // Your xAI API key
+  model: "grok-2-1212", // Optional: Specify the model
+});
+```
+
+Once you have created the LLM instance, you can use it with SpinAI's agent creation functions to process natural language input and generate responses.
+
+## Examples
+
+### Basic xAI Integration Example
+
+This example demonstrates how to set up a basic integration with the xAI LLM to process a simple prompt.
+
+```typescript
+import { createXAILLM } from "spinai";
+
+const llm = createXAILLM({
+  apiKey: process.env.XAI_API_KEY,
+});
+
+const options = {
+  prompt: "Explain the significance of machine learning in today's technology.",
+  maxTokens: 100,
+};
+
+llm.complete(options).then((result) => {
+  console.log(result.content); // Outputs the generated text
+});
+```
+
+### Advanced Usage Scenarios
+
+For more advanced scenarios, such as generating responses that adhere to a specific JSON schema, you can pass a `schema` parameter in the completion options.
+
+```typescript
+const schema = {
+  type: "object",
+  properties: {
+    answer: { type: "string" },
+    details: { type: "string" },
+  },
+  required: ["answer"],
+};
+
+const options = {
+  prompt: "Describe the impact of AI on healthcare.",
+  schema,
+  maxTokens: 200,
+};
+
+llm.complete(options).then((result) => {
+  console.log(result.content); // Outputs the JSON object matching the schema
+});
+```
+
+## Best Practices
+
+- **API Key Security**: Keep your xAI API key secure and do not expose it in client-side code.
+- **Token Management**: Be mindful of the `maxTokens` parameter to manage the cost of using the xAI LLM.
+- **Error Handling**: Implement robust error handling to manage any issues that arise during the interaction with xAI services.
+
+## Troubleshooting
+
+- **API Key Issues**: If you encounter authentication errors, ensure your xAI API key is correct and has not expired.
+- **Response Parsing**: When using a schema, ensure your expected response format matches the schema exactly to avoid parsing errors.
+
+For further assistance, refer to the xAI documentation or contact their support team.
