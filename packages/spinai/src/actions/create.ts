@@ -4,6 +4,7 @@ import { SpinAiContext } from "../types/context";
 export function createAction(config: {
   id: string;
   description: string;
+  additionalInstructions?: string;
   parameters?: {
     type: "object";
     properties: Record<string, unknown>;
@@ -20,6 +21,7 @@ export function createAction(config: {
     id: config.id,
     description: config.description,
     parameters: config.parameters,
+    additionalInstructions: config.additionalInstructions,
     run: config.run,
     dependsOn: config.dependsOn || [],
     retries: config.retries || 2,

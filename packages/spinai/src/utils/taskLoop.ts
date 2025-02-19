@@ -180,10 +180,11 @@ export async function runTaskLoop<T = string>(params: {
       }
 
       // Resolve dependencies and execute actions
-      const orderedActions = resolveDependencies(planResult.actions, actions);
+      // const orderedActions = resolveDependencies(planResult.actions, actions);
+      // console.log({ orderedActions });
 
       // Execute each planned action in dependency order
-      for (const plannedActionId of orderedActions) {
+      for (const plannedActionId of planResult.actions) {
         const action = actions.find((a) => a.id === plannedActionId);
         if (!action) {
           const errorMessage = `Action ${plannedActionId} not found`;
@@ -198,7 +199,7 @@ export async function runTaskLoop<T = string>(params: {
         }
 
         if (executedActions.has(plannedActionId)) {
-          continue;
+          // continue;
         }
 
         const maxRetries = action.retries ?? 2; // Default to 2 retries if not specified
@@ -208,7 +209,7 @@ export async function runTaskLoop<T = string>(params: {
 
         // Keep retrying until success or max retries exceeded
         while (currentRetries <= maxRetries) {
-          const actionStartTime = Date.now();
+          const entireActionStartTime = Date.now();
 
           try {
             // Only get parameters on first try or if they're undefined
@@ -226,8 +227,15 @@ export async function runTaskLoop<T = string>(params: {
             }
 
             // Execute the action
+            const actionStartTime = Date.now();
             context = await action.run(context, parameters);
             const actionDuration = Date.now() - actionStartTime;
+            log(`Finished executing ${action.id}`, {
+              type: "action",
+              data: {
+                durationMs: actionDuration,
+              },
+            });
 
             // Reset retry count on success
             actionRetries.delete(plannedActionId);
@@ -255,8 +263,7 @@ export async function runTaskLoop<T = string>(params: {
             lastError =
               error instanceof Error ? error : new Error(String(error));
             const errorMessage = lastError.message;
-            const actionErrorDuration = Date.now() - actionStartTime;
-
+            const actionErrorDuration = Date.now() - entireActionStartTime;
             // Increment retry count
             currentRetries++;
             actionRetries.set(plannedActionId, currentRetries);

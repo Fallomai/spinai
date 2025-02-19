@@ -49,7 +49,15 @@ export class BasePlanner implements ActionPlanner {
   }
 
   private formatAvailableActions(actions: Action[]): string {
-    return actions.map((a) => `${a.id}: ${a.description}`).join("\n");
+    return actions
+      .map(
+        (a) => `
+      ${a.id}:
+        description: ${a.description}
+        dependencies: ${a.dependsOn ? JSON.stringify(a.dependsOn) : "[]"}
+    `
+      )
+      .join("\n");
   }
 
   private trackCost(costCents: number) {
@@ -92,6 +100,12 @@ export class BasePlanner implements ActionPlanner {
     this.trackCost(result.costCents);
 
     // Log the planning result
+    console.log(
+      result.content.actions.length === 0
+        ? "none"
+        : result.content.actions.join(", ")
+    );
+    console.log(result.content.actions);
     log(
       `Next actions: ${result.content.actions.length === 0 ? "none" : result.content.actions.join(", ")}`,
       {
@@ -154,7 +168,7 @@ export class BasePlanner implements ActionPlanner {
       );
     }
 
-    const prompt = GET_ACTION_PARAMETERS_PROMPT.replace("{{action}}", action)
+    let prompt = GET_ACTION_PARAMETERS_PROMPT.replace("{{action}}", action)
       .replace("{{instructions}}", this.instructions)
       .replace("{{input}}", input)
       .replace("{{actionDescription}}", actionDef.description)
@@ -163,6 +177,11 @@ export class BasePlanner implements ActionPlanner {
         JSON.stringify(actionDef.parameters, null, 2)
       )
       .replace("{{state}}", this.formatState(state));
+
+    if (actionDef.additionalInstructions) {
+      prompt += `Additional instructions on how to use this action: 
+      ${actionDef.additionalInstructions}`;
+    }
 
     const startTime = Date.now();
     const result = await llm.complete<ActionParametersResult>({

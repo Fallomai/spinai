@@ -3,6 +3,7 @@ import { SpinAiContext } from "./context";
 export interface Action {
   id: string;
   description: string;
+  additionalInstructions?: string;
   parameters?: {
     type: "object";
     properties: Record<string, unknown>;
