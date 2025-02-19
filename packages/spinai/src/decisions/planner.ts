@@ -49,7 +49,15 @@ export class BasePlanner implements ActionPlanner {
   }
 
   private formatAvailableActions(actions: Action[]): string {
-    return actions.map((a) => `${a.id}: ${a.description}`).join("\n");
+    return actions
+      .map(
+        (a) => `
+      ${a.id}:
+        description: ${a.description}
+        dependencies: ${a.dependsOn ? JSON.stringify(a.dependsOn) : "[]"}
+    `
+      )
+      .join("\n");
   }
 
   private trackCost(costCents: number) {

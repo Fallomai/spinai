@@ -198,6 +198,7 @@ export async function runTaskLoop<T = string>(params: {
         }
 
         if (executedActions.has(plannedActionId)) {
+          console.log("not rerunning a duplicate action");
           continue;
         }
 
@@ -208,7 +209,7 @@ export async function runTaskLoop<T = string>(params: {
 
         // Keep retrying until success or max retries exceeded
         while (currentRetries <= maxRetries) {
-          const actionStartTime = Date.now();
+          const entireActionStartTime = Date.now();
 
           try {
             // Only get parameters on first try or if they're undefined
@@ -226,8 +227,16 @@ export async function runTaskLoop<T = string>(params: {
             }
 
             // Execute the action
+            const actionStartTime = Date.now();
+
             context = await action.run(context, parameters);
             const actionDuration = Date.now() - actionStartTime;
+            log(`Finished executing ${action.id}`, {
+              type: "action",
+              data: {
+                durationMs: actionDuration,
+              },
+            });
 
             // Reset retry count on success
             actionRetries.delete(plannedActionId);
@@ -255,7 +264,7 @@ export async function runTaskLoop<T = string>(params: {
             lastError =
               error instanceof Error ? error : new Error(String(error));
             const errorMessage = lastError.message;
-            const actionErrorDuration = Date.now() - actionStartTime;
+            const actionErrorDuration = Date.now() - entireActionStartTime;
 
             // Increment retry count
             currentRetries++;

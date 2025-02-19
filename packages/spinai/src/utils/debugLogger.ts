@@ -57,6 +57,7 @@ function formatSummaryMetrics(data?: Record<string, unknown>): string {
   if (data.costCents)
     parts.push(`cost ${formatCost(data.costCents as number)}`);
   if (
+    debugMode !== "default" &&
     data.executedActions &&
     Array.isArray(data.executedActions) &&
     data.executedActions.length > 0

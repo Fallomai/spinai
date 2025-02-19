@@ -2,8 +2,10 @@ export interface ExecutedActionSummary {
   id: string;
   parameters?: Record<string, unknown>;
   result?: unknown;
-  status: "success" | "error";
+  status: "success" | "error" | "max_retries_exceeded";
   errorMessage?: string;
+  retryCount?: number;
+  timestamp: number;
 }
 
 export interface InteractionSummary {
@@ -11,7 +13,7 @@ export interface InteractionSummary {
   originalInput: string;
   executedActions: ExecutedActionSummary[];
   finalResponse: unknown;
-  finalState: Record<string, unknown>;
+  finalState: unknown;
   previousInteraction?: {
     interactionId: string;
     originalInput: string;
