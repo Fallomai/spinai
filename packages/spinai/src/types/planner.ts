@@ -2,6 +2,22 @@ import { LLM } from "../llms/base";
 import { Action } from "./action";
 import { ResponseFormat } from "./agent";
 
+export interface ExecutedAction {
+  id: string;
+  parameters: Record<string, unknown>;
+  status: "success" | "error" | "max_retries_exceeded";
+  result?: unknown;
+  errorMessage?: string;
+  retryCount?: number;
+  timestamp: number;
+}
+
+export interface ActionPlannerState {
+  input: string;
+  context: Record<string, unknown>;
+  executedActions: ExecutedAction[];
+}
+
 export interface PlanNextActionsResult {
   actions: string[];
   reasoning?: string;
@@ -21,18 +37,6 @@ export interface FormatResponseResult {
   reasoning: string;
   inputTokens?: number;
   outputTokens?: number;
-}
-
-export interface ActionPlannerState {
-  input: string;
-  context: Record<string, unknown>;
-  executedActions: Array<{
-    id: string;
-    parameters?: Record<string, unknown>;
-    result?: unknown;
-    status: "success" | "error";
-    errorMessage?: string;
-  }>;
 }
 
 export interface ActionPlanner {
