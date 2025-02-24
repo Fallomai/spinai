@@ -26,10 +26,10 @@ and choose the Github-code-reviewer template.
 npm install
 ```
 
-2. Copy the environment variables file and configure it:
+_2. Copy the environment variables file and configure it:
 ```bash
 cp .env.example .env
-```
+```_
 
 3. Fill in your `.env` file:
 ```env

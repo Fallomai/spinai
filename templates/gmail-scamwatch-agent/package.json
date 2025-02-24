@@ -1,0 +1,26 @@
+{
+  "name": "gmail-scamwatch-agent",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "eslint \"src/**/*.ts*\"",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "googleapis": "^144.0.0",
+    "node-cron": "^3.0.3",
+    "spinai": "*",
+    "tsx": "^4.7.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/node-cron": "^3.0.11",
+    "@types/react": "18.3.1",
+    "@types/react-dom": "18.3.0",
+    "typescript": "5.5.4"
+  }
+}
