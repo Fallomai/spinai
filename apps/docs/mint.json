@@ -78,8 +78,11 @@
       "pages": [
         {
           "group": "Calculator agent (beginners)",
-          "pages": ["examples/calculator-agent/overview"]
-        }
+          "pages": [
+            "examples/calculator-agent/overview"
+          ]
+        },
+        "examples/gmail-scamwatch-agent/overview"
       ]
     }
   ],
