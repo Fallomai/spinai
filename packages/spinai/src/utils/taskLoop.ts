@@ -8,7 +8,9 @@ import type {
 } from "../types/agent";
 import { log, setDebugEnabled } from "./debugLogger";
 import { LoggingService } from "./logging";
-import { BasePlanner } from "../decisions/planner";
+import { ActionPlanner } from "../decisions/action-planner";
+import { ParameterPlanner } from "../decisions/parameter-planner";
+import { ResponsePlanner } from "../decisions/response-planner";
 import { LLM } from "../llms/base";
 import { ActionPlannerState } from "../types/planner";
 import { DebugMode } from "../types/debug";
@@ -55,8 +57,10 @@ export async function runTaskLoop<T = string>(params: {
     isRerun: context.isRerun ?? false,
   });
 
-  // Initialize planner
-  const planner = new BasePlanner(logger, params.instructions);
+  // Initialize planners
+  const actionPlanner = new ActionPlanner(logger, params.instructions);
+  const parameterPlanner = new ParameterPlanner(logger, params.instructions);
+  const responsePlanner = new ResponsePlanner(logger, params.instructions);
 
   const plannerState: ActionPlannerState = {
     input: context.input,
@@ -77,27 +81,27 @@ export async function runTaskLoop<T = string>(params: {
 
     while (true) {
       // Plan next actions
-      const planResult = await planner.planNextActions({
+      const planResult = await actionPlanner.planNextActions({
         llm: model,
         input: context.input,
         plannerState,
         availableActions: actions,
         isRerun: context.isRerun ?? false,
       });
-      totalCostCents += planner.getTotalCost();
-      planner.resetCost();
+      totalCostCents += actionPlanner.getTotalCost();
+      actionPlanner.resetCost();
 
       // If no actions planned, format final response and return
       if (planResult.actions.length === 0) {
         log("Generating final response...", { type: "action" });
 
-        const responseResult = await planner.formatResponse({
+        const responseResult = await responsePlanner.formatResponse({
           llm: model,
           input: context.input,
           plannerState,
           responseFormat: params.responseFormat,
         });
-        totalCostCents += planner.getTotalCost();
+        totalCostCents += responsePlanner.getTotalCost();
 
         log(responseResult.response as string, { type: "response" });
 
@@ -194,7 +198,7 @@ export async function runTaskLoop<T = string>(params: {
           try {
             // Only get parameters on first try or if they're undefined
             if (!parameters && action.parameters) {
-              const paramResult = await planner.getActionParameters({
+              const paramResult = await parameterPlanner.getActionParameters({
                 llm: model,
                 action: action.id,
                 input: context.input,
@@ -202,8 +206,8 @@ export async function runTaskLoop<T = string>(params: {
                 availableActions: actions,
               });
               parameters = paramResult.parameters;
-              totalCostCents += planner.getTotalCost();
-              planner.resetCost();
+              totalCostCents += parameterPlanner.getTotalCost();
+              parameterPlanner.resetCost();
             }
 
             const actionStartTime = Date.now();
