@@ -1,0 +1,118 @@
+---
+title: Gmail Scamwatch Agent
+description: Learn how to set up and use the Gmail Scamwatch Agent to detect and handle scam emails in your Gmail inbox.
+---
+
+## Introduction
+
+The Gmail Scamwatch Agent, named Sparky, is a sophisticated tool designed to analyze Gmail messages for potential scams. It identifies phishing attempts and fraudulent activities, automatically reports confirmed phishing emails, and moves suspicious messages to the Spam folder. This documentation provides an overview of Sparky, including its features, setup instructions, and how to customize its behavior to suit your needs.
+
+## Configuration
+
+Before diving into the setup, ensure you have the following prerequisites:
+
+- Node.js installed on your system.
+- A Google Cloud Project with the Gmail API enabled. Follow the [Gmail API Node.js Quickstart](https://developers.google.com/gmail/api/quickstart/nodejs) guide if you haven't set this up yet.
+
+## Setup Instructions
+
+To get started with Sparky, follow these steps:
+
+1. **Install Dependencies**
+
+   Run the following command to install the necessary dependencies:
+
+   ```bash
+   npm install
+   ```
+
+2. **Configure Environment Variables**
+
+   Copy the provided `.env.example` file to a new file named `.env`:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   Then, fill in your `.env` file with the appropriate values:
+
+   ```env
+   GEMINI_API_KEY="your-google-ai-studio-api-key"
+   GMAIL_CLIENT_ID='your_client_id'
+   GMAIL_CLIENT_SECRET='your_client_secret'
+   GMAIL_REDIRECT_URI='your_redirect_uri'
+   GMAIL_REFRESH_TOKEN='your_refresh_token'
+   SPINAI_API_KEY='your-spinai-api-key' # Optional
+   ```
+
+3. **Run Sparky**
+
+   Start the agent by running:
+
+   ```bash
+   npm start
+   ```
+
+   Sparky will begin analyzing your Gmail inbox for potential scams, taking appropriate actions based on its analysis.
+
+## How to Use
+
+Sparky operates based on predefined rules to assess incoming emails. You can customize these rules in the `scamWatchAgent` configuration within the code to better suit your needs. Here's a brief overview of how to interact with Sparky:
+
+### Setting up .env file
+
+Ensure your `.env` file is correctly set up with your Google API and Gmail API credentials, as well as the optional SpinAI API key if you're using it. This step is crucial for Sparky to access and analyze your Gmail inbox.
+
+### Initializing the agent
+
+The agent is initialized in the `src/index.ts` file, where you can adjust its behavior and rules. Here's a snippet to illustrate the initialization process:
+
+```typescript
+import { createAgent } from "spinai";
+
+const scamWatchAgent = createAgent({
+  instructions: `Your detailed instructions here...`,
+  actions: [moveEmail, reportEmail],
+  llm,
+});
+```
+
+### Handling scam emails
+
+Sparky uses actions such as `moveEmail` and `reportEmail` to handle detected scam emails. These actions are defined in the `src/actions` directory and can be customized as needed.
+
+## API Reference
+
+Refer to the [Core Concepts: Actions](/docs/core-concepts/actions) documentation for more details on how to define and use actions within Sparky.
+
+## Examples
+
+Here are some examples to help you get started with configuring and using Sparky:
+
+### Example: Setting up .env file
+
+Ensure your `.env` file includes all necessary API keys and credentials. This is critical for Sparky's operation.
+
+### Example: Initializing the agent
+
+```typescript
+// src/index.ts
+import { createAgent, createGeminiLLM } from "spinai";
+
+const llm = createGeminiLLM({
+  apiKey: process.env.GEMINI_API_KEY as string,
+  model: "gemini-2.0-flash-exp",
+});
+
+const scamWatchAgent = createAgent({
+  instructions: `Your instructions here...`,
+  actions: [moveEmail, reportEmail],
+  llm,
+});
+```
+
+### Example: Handling scam emails
+
+Customize the `moveEmail` and `reportEmail` actions to define exactly how Sparky should handle detected scams.
+
+By following these guidelines and examples, you can effectively set up and customize Sparky, the Gmail Scamwatch Agent, to protect your inbox from scams and phishing attempts.
