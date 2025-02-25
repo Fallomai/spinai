@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { calculateCost } from "../utils/tokenCounter";
-import { CompletionOptions, CompletionResult, LLM } from "./base";
+import { CompletionOptions, CompletionResult, LLM } from "../types/llms";
 
 export interface GeminiConfig {
   apiKey: string;
@@ -60,7 +60,6 @@ export function createGeminiLLM(config: GeminiConfig): LLM {
           throw new Error("Parsed response does not match schema");
         }
         content = parsedOutput;
-
       } else {
         content = rawOutput as T;
       }

@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import type { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 import { calculateCost } from "../utils/tokenCounter";
-import { LLM, CompletionOptions, CompletionResult } from "./base";
+import { LLM, CompletionOptions, CompletionResult } from "../types/llms";
 
 export interface xAIConfig {
   apiKey: string;

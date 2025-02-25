@@ -1,6 +1,6 @@
 import { VercelClient } from "@vercel/ai";
 import { calculateCost } from "../utils/tokenCounter";
-import { LLM, CompletionOptions, CompletionResult } from "./base";
+import { LLM, CompletionOptions, CompletionResult } from "../types/llms";
 
 export interface VercelConfig {
   apiKey: string;
@@ -56,4 +56,4 @@ export function createVercelLLM(config: VercelConfig): LLM {
       };
     },
   };
-} 
+}

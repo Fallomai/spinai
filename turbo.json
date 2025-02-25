@@ -26,6 +26,10 @@
     },
     "docs": {
       "dependsOn": ["^docs"]
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"]
     }
   }
 }

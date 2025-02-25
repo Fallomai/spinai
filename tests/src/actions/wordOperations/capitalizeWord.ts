@@ -9,23 +9,23 @@ export const capitalizeWord = createAction({
     properties: {
       word: {
         type: "string",
-        description: "The word to capitalize",
+        description: "The word current word thus far to capitalize",
       },
     },
     required: ["word"],
   },
-  dependsOn: ["reverseWord"],
   async run(
     context: SpinAiContext,
     parameters?: Record<string, unknown>
   ): Promise<SpinAiContext> {
     const word = parameters?.word as string;
+    console.log({ word });
     if (!word) {
       throw new Error("No word parameter provided");
     }
 
     const capitalized = word.toUpperCase();
-    context.state.capitalizedWord = capitalized;
+    context.state.word = capitalized;
 
     return context;
   },

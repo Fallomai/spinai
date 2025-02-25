@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 import { calculateCost } from "../utils/tokenCounter";
-import { LLM, CompletionOptions, CompletionResult } from "./base";
+import { LLM, CompletionOptions, CompletionResult } from "../types/llms";
 
 export interface OpenAIConfig {
   apiKey: string;

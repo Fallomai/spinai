@@ -1,14 +1,13 @@
 {
-  "name": "calculator-agent",
+  "name": "tests",
   "version": "0.1.0",
-  "type": "module",
   "private": true,
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "start": "tsx src/index.ts",
-    "build": "tsc",
     "lint": "eslint \"src/**/*.ts*\"",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:verbose": "jest --verbose -t 'should maintain correct execution order with multiple operations' src/__tests__/general.test.ts"
   },
   "dependencies": {
     "axios": "^1.7.9",
@@ -18,9 +17,13 @@
     "tsx": "^4.7.1"
   },
   "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "@types/jest": "^29.5.12",
     "@types/node": "^20",
     "@types/react": "18.3.1",
     "@types/react-dom": "18.3.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
     "typescript": "5.5.4"
   }
 }

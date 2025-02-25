@@ -9,23 +9,23 @@ export const reverseWord = createAction({
     properties: {
       word: {
         type: "string",
-        description: "The word to reverse",
+        description: "The current word thus far to reverse",
       },
     },
     required: ["word"],
   },
-  dependsOn: ["randomizeVowels"],
   async run(
     context: SpinAiContext,
     parameters?: Record<string, unknown>
   ): Promise<SpinAiContext> {
     const word = parameters?.word as string;
+    console.log({ word });
     if (!word) {
       throw new Error("No word parameter provided");
     }
 
     const reversed = word.split("").reverse().join("");
-    context.state.reversedWord = reversed;
+    context.state.word = reversed;
 
     return context;
   },

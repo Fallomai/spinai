@@ -6,11 +6,13 @@
     "dev": "turbo dev --filter=!./examples/**",
     "docs": "turbo docs --filter=!./examples/**",
     "lint": "turbo lint --filter=!./examples/**",
+    "test": "cd tests && npm run test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "update-packages": "changeset",
     "publish-packages": "turbo run build lint --filter=!./examples/** && changeset version && changeset publish"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
     "prettier": "^3.2.5",
     "turbo": "^2.3.3",
     "typescript": "5.5.4"
@@ -22,10 +24,13 @@
   "workspaces": [
     "apps/*",
     "packages/*",
-    "examples/*"
+    "examples/*",
+    "tests/*"
   ],
   "dependencies": {
     "@changesets/cli": "^2.27.11",
-    "changeset": "^0.2.6"
+    "ai": "^4.1.46",
+    "changeset": "^0.2.6",
+    "dotenv": "^16.4.7"
   }
 }

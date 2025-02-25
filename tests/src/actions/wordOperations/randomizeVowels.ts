@@ -11,16 +11,17 @@ export const randomizeVowels = createAction({
     properties: {
       word: {
         type: "string",
-        description: "The word to randomize vowels for",
+        description: "The current word thus far to randomize vowels for",
       },
     },
-    required: ["word"],
   },
+  dependsOn: ["addExclamation"],
   async run(
     context: SpinAiContext,
     parameters?: Record<string, unknown>
   ): Promise<SpinAiContext> {
     const word = parameters?.word as string;
+    console.log({ word });
     if (!word) {
       throw new Error("No word parameter provided");
     }
@@ -36,7 +37,7 @@ export const randomizeVowels = createAction({
       })
       .join("");
 
-    context.state.generatedWord = randomizedWord;
+    context.state.word = randomizedWord;
     return context;
   },
 });

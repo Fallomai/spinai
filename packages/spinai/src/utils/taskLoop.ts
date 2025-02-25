@@ -9,7 +9,7 @@ import type {
 import { log, setDebugEnabled } from "./debugLogger";
 import { LoggingService } from "./logging";
 import { BasePlanner } from "../decisions/planner";
-import { LLM } from "../llms/base";
+import { LLM } from "../types/llms";
 import { ActionPlannerState } from "../types/planner";
 import { DebugMode } from "../types/debug";
 

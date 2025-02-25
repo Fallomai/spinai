@@ -1,5 +1,5 @@
 import { Action } from "./action";
-import { LLM } from "../llms/base";
+import { LLM } from "./llms";
 import { DebugMode } from "./debug";
 
 export interface JSONResponseFormat {

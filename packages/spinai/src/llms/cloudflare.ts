@@ -1,4 +1,4 @@
-import { LLM, CompletionOptions, CompletionResult } from "./base";
+import { LLM, CompletionOptions, CompletionResult } from "../types/llms";
 import { calculateCost } from "../utils/tokenCounter";
 
 export interface CloudflareConfig {

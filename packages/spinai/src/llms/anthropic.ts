@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { LLM, CompletionOptions, CompletionResult } from "./base";
+import { LLM, CompletionOptions, CompletionResult } from "../types/llms";
 import { calculateCost } from "../utils/tokenCounter";
 
 export interface AnthropicConfig {

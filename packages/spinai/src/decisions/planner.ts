@@ -1,4 +1,4 @@
-import { LLM } from "../llms/base";
+import { LLM } from "../types/llms";
 import { Action } from "../types/action";
 import { ResponseFormat } from "../types/agent";
 import Ajv from "ajv";

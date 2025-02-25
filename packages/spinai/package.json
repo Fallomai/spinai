@@ -47,6 +47,7 @@
     "@aws-sdk/credential-providers": "^3.749.0",
     "@google/generative-ai": "^0.21.0",
     "ajv": "^8.17.1",
+    "fast-uri": "^3.0.6",
     "openai": "^4.77.0",
     "tsup": "^8.3.5",
     "uuid": "^9.0.0"
