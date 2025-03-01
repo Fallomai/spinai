@@ -57,7 +57,9 @@
         "core-concepts/agents",
         "core-concepts/actions",
         "core-concepts/state-and-parameters",
-        "core-concepts/observability"
+        "core-concepts/observability",
+        "core-concepts/costs",
+        "core-concepts/debugging"
       ]
     },
     {
@@ -78,7 +80,9 @@
       "pages": [
         {
           "group": "Calculator agent (beginners)",
-          "pages": ["examples/calculator-agent/overview"]
+          "pages": [
+            "examples/calculator-agent/overview"
+          ]
         }
       ]
     }
