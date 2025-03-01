@@ -1,0 +1,73 @@
+---
+title: "Debugging with SpinAI"
+description: "Explore the enhanced debugging capabilities in SpinAI for more efficient development."
+---
+
+## Introduction to Debugging
+
+Debugging is a critical part of the development process, allowing developers to identify and resolve issues within their code. SpinAI has introduced enhanced debugging capabilities to streamline this process, making it easier for developers to diagnose and fix problems. These enhancements include a more intuitive API and a set of tools designed to provide deeper insights into the execution of SpinAI applications.
+
+## Debugging Tools and Types
+
+SpinAI's debugging enhancements are centered around two main exports: the debugging functions and the debugging types. These are designed to work seamlessly with the framework, providing a type-safe and efficient way to debug your applications.
+
+### Debugging Functions
+
+The debugging functions are accessible through the `debug` export. These functions allow you to set the debug mode and log options, enabling more detailed output during the execution of your application.
+
+```typescript
+import { setDebugMode, logDebugInfo } from "spinai/debug";
+
+setDebugMode("verbose");
+logDebugInfo("Starting application...");
+```
+
+### Debugging Types
+
+The debugging types, such as `DebugMode` and `LogOptions`, define the structure for the debugging configurations. These types are crucial for ensuring that the debugging settings are correctly applied and that the information logged is useful and relevant.
+
+```typescript
+import { DebugMode, LogOptions } from "spinai/debug/debug.types";
+
+let debugMode: DebugMode = "default";
+let logOptions: LogOptions = {
+  showTimestamp: true,
+  showLogLevel: true
+};
+```
+
+## Basic Debugging Example
+
+To demonstrate the enhanced debugging capabilities, let's look at a basic example of how to use these new features in a SpinAI application.
+
+```typescript
+import { setDebugMode, logDebugInfo } from "spinai/debug";
+
+// Set the debug mode to verbose to see detailed logs
+setDebugMode("verbose");
+
+// Log some debug information
+logDebugInfo("Application initialized.", {
+  additionalInfo: "More details about the initialization process."
+});
+
+// Your application logic here
+```
+
+In this example, we first set the debug mode to `verbose` to ensure that we get detailed logs throughout our application. Then, we use `logDebugInfo` to log some initial debug information, including some additional details about the process. This approach helps in pinpointing issues more effectively by providing a clear and detailed log output.
+
+## Conclusion
+
+SpinAI's enhanced debugging capabilities are designed to make the development process smoother and more efficient. By leveraging the new debugging tools and types, developers can gain better insights into their applications, leading to quicker identification and resolution of issues. As you integrate these debugging enhancements into your development workflow, you'll find it easier to maintain high-quality, error-free code in your SpinAI projects.
+
+<CardGroup>
+  <Card title="Understanding SpinAI Architecture" icon="structure" href="/core-concepts/spinai-architecture">
+    Dive deeper into the architecture of SpinAI
+  </Card>
+  <Card title="Advanced Debugging Techniques" icon="tools" href="/advanced-concepts/debugging-techniques">
+    Explore advanced debugging techniques in SpinAI
+  </Card>
+  <Card title="Developing with SpinAI" icon="code" href="/getting-started/developing-with-spinai">
+    Start developing with SpinAI
+  </Card>
+</CardGroup>
