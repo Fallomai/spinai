@@ -12,116 +12,103 @@ Actions are discrete tasks that your AI agent can perform. They are:
 - Dependency-aware
 - Reusable across agents
 
-## Creating Actions
+## New Actions Overview
 
-Use the `createAction` function to define actions:
+With the latest update, SpinAI introduces new functionalities and improvements to actions, including:
+
+- Enhanced action formatting for prompts
+- Updated action types for better integration and flexibility
+- Simplified creation of custom actions
+
+These enhancements aim to streamline the development process and expand the capabilities of your AI agents.
+
+## Action Formatting and Types
+
+The introduction of `formatActionForPrompt` and `formatActionsForPrompt` functions allows for better presentation and organization of actions, especially when dealing with user inputs or displaying available actions in a user-friendly format.
+
+### Formatting Actions
+
+To format a single action for a prompt:
+
+```typescript
+import { formatActionForPrompt } from "spinai";
+
+const formattedAction = formatActionForPrompt(action);
+console.log(formattedAction);
+```
+
+To format multiple actions for a prompt:
+
+```typescript
+import { formatActionsForPrompt } from "spinai";
+
+const formattedActions = formatActionsForPrompt(actions);
+console.log(formattedActions);
+```
+
+### Updated Action Types
+
+The `Action` interface has been updated to support a more flexible `run` function, accommodating different contexts and parameters:
+
+```typescript
+interface Action {
+  id: string;
+  description: string;
+  parameters?: {
+    type: "object";
+    properties: Record<string, unknown>;
+    required?: string[];
+  };
+  run: (params: {
+    context: TaskLoopParams;
+    parameters?: Record<string, unknown>;
+  }) => Promise<any>;
+  dependsOn?: string[];
+  retries?: number;
+}
+```
+
+## Creating Custom Actions
+
+The process for creating custom actions remains straightforward while offering enhanced flexibility with the updated `Action` interface.
+
+### Defining a New Action
+
+To define a new action, use the `createAction` function with the updated `Action` interface:
 
 ```typescript
 import { createAction } from "spinai";
 
-export const minus = createAction({
-  id: "minus",
-  description: "Subtracts two numbers from each other",
+export const add = createAction({
+  id: "add",
+  description: "Adds two numbers together",
   parameters: {
     type: "object",
     properties: {
-      a: { type: "number", description: "Number to subtract from" },
-      b: { type: "number", description: "Number to subtract" },
+      x: { type: "number", description: "First number" },
+      y: { type: "number", description: "Second number" },
     },
-    required: ["a", "b"],
+    required: ["x", "y"],
   },
-  async run(context, parameters) {
-    const { a, b } = parameters || {};
-    const result = a - b;
+  async run({ context, parameters }) {
+    const { x, y } = parameters || {};
+    const result = x + y;
     context.state.result = result;
-    return context;
+    return context.state;
   },
 });
 ```
 
-## Action Configuration
-
-```typescript
-interface ActionConfig {
-  id: string; // Unique identifier
-  description: string; // Used by LLM to decide when to use this action
-  parameters?: {
-    type: "object";
-    properties: Record<
-      string,
-      {
-        type: string;
-        description: string;
-      }
-    >;
-    required?: string[];
-  }; // JSON Schema for action parameters
-  dependsOn?: string[]; // IDs of actions that must run first
-  retries?: number; // Number of retry attempts (default: 2)
-  run: (
-    context: SpinAiContext,
-    parameters?: Record<string, unknown>
-  ) => Promise<SpinAiContext>;
-}
-```
-
-## Dependencies
-
-Actions can depend on other actions:
-
-```typescript
-// Actions will run in the correct order
-dependsOn: ["validatePayment", "checkInventory"];
-```
-
-SpinAI automatically:
-
-- Resolves dependency order
-- Ensures prerequisites run first
-- Prevents circular dependencies
-- Handles parallel execution when possible
+This example demonstrates how to define an action that adds two numbers, showcasing the use of the updated `run` function signature which now accepts an object containing `context` and `parameters`.
 
 ## Best Practices
 
-1. **Clear Parameter Schemas**
-   Define clear parameter types and descriptions:
+When creating and configuring actions, consider the following best practices:
 
-   ```typescript
-   parameters: {
-     type: "object",
-     properties: {
-       query: {
-         type: "string",
-         description: "Search query to find customer records"
-       }
-     }
-   }
-   ```
-
-2. **Descriptive Action Descriptions**
-   Help the LLM understand both when to use the action AND what parameters it needs:
-
-   ```typescript
-   description: "Searches for customers. Expects a 'query' parameter containing search terms like name or email.";
-   ```
-
-3. **State Management**
-   While parameters are preferred for inputs, use state for:
-
-   - Storing action results
-   - Sharing data between actions
-   - Maintaining conversation context
-   - See [State & Parameters](/core-concepts/state-and-parameters) for advanced usage
-
-4. **Error Handling**
-   Validate parameters and use the retry system for unreliable operations:
-
-   ```typescript
-   // Parameter validation
-   if (!parameters?.query?.trim()) {
-     throw new Error("Search query cannot be empty");
-   }
-   ```
+1. **Clear Parameter Schemas**: Define explicit parameter types and descriptions to ensure clarity and usability.
+2. **Descriptive Action Descriptions**: Provide detailed descriptions to help understand when and how to use the action.
+3. **State Management**: Utilize state for storing results, sharing data between actions, and maintaining context.
+4. **Error Handling**: Implement parameter validation and leverage the retry mechanism for enhanced reliability.
 
 ## Next Steps
 
