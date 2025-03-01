@@ -1,23 +1,21 @@
 ---
 title: "Calculator Agent"
-description: "Build an AI agent that acts as a calculator using SpinAI"
+description: "Enhance your AI agent to act as a versatile calculator with SpinAI, now including division and multiplication."
 ---
 
 ## Overview
 
-A simple calculator agent that demonstrates core SpinAI concepts. The agent:
-
-- Processes mathematical expressions in natural language
-- Dynamically chooses between addition and subtraction operations
-- Returns numerical results
+This enhanced calculator agent showcases the expanded capabilities of SpinAI by processing mathematical expressions in natural language and performing a variety of operations including addition, subtraction, multiplication, and division, returning precise numerical results.
 
 ## Structure
 
 ```bash
 src/
 ├── actions/
-│   ├── sum.ts     # Addition operation
-│   └── minus.ts   # Subtraction operation
+│   ├── sum.ts     # Performs addition
+│   ├── minus.ts   # Performs subtraction
+│   ├── multiply.ts # Performs multiplication
+│   └── divide.ts  # Performs division
 └── index.ts       # Main agent setup
 ```
 
@@ -29,7 +27,7 @@ src/
 npx create-spinai
 ```
 
-2. Select the default template
+2. Select the default template.
 
 3. Set up your environment:
 
@@ -40,36 +38,71 @@ OPENAI_API_KEY=your-key-here
 
 ## How It Works
 
-1. **Agent Setup**: Uses OpenAI (swappable with [any supported LLM](/llms/overview)) for decision making
+1. **Agent Setup**: Utilizes OpenAI (or any supported LLM from [our documentation](/llms/overview)) for decision-making.
 2. **Available Actions**:
-   - `sum`: Adds two numbers
-   - `minus`: Subtracts two numbers
-3. **Input Processing**: Converts natural language (e.g. "What is 5 plus 3 - 1?") into mathematical operations
-4. **State Management**: Tracks calculation progress through multiple operations
+   - `sum`: Adds two numbers together.
+   - `minus`: Subtracts one number from another.
+   - `multiply`: Multiplies two numbers.
+   - `divide`: Divides one number by another, with error handling for division by zero.
+3. **Input Processing**: Interprets natural language inputs (e.g., "What is 5 plus 3, multiplied by 2, divided by 3?") into mathematical operations.
+4. **State Management**: Optionally, manage calculation states through multiple operations for complex queries.
 
 ## Example Usage
 
 ```typescript
 const calculatorAgent = createAgent({
   instructions: `You are a calculator agent that helps users perform mathematical calculations.`,
-  actions: [sum, minus],
+  actions: [sum, minus, multiply, divide],
   llm,
 });
 
-// Example: "What is 5 plus 3 minus 1?"
+// Example: "What is 5 plus 3, multiplied by 2, divided by 3?"
 const { response } = await calculatorAgent({
-  input: "What is 5 plus 3 minus 1?",
+  input: "What is 5 plus 3, multiplied by 2, divided by 3?",
   state: {},
 });
 ```
 
+## Introduction to New Actions
+
+The calculator agent has been upgraded with two new actions: `multiply` and `divide`, allowing for a broader range of mathematical operations.
+
+### Updated Action Descriptions
+
+- **Addition (`sum`)**: Adds two numbers together.
+- **Subtraction (`minus`)**: Subtracts one number from another.
+- **Multiplication (`multiply`)**: Multiplies two numbers together.
+- **Division (`divide`)**: Divides one number by another, ensuring division by zero is handled gracefully.
+
+## Examples for Division and Multiplication
+
+### Division Action Usage Example
+
+```typescript
+import { divide } from './actions/divide';
+
+// Divide 10 by 2
+const result = await divide.run({ parameters: { a: 10, b: 2 } });
+console.log(result); // Outputs: 5
+```
+
+### Multiplication Action Usage Example
+
+```typescript
+import { multiply } from './actions/multiply';
+
+// Multiply 5 by 3
+const result = await multiply.run({ parameters: { a: 5, b: 3 } });
+console.log(result); // Outputs: 15
+```
+
 ## Next Steps
 
-Here are some easy things you can add to get your hands dirty and learn how Spin works
+To further explore Spin's capabilities:
 
-- Add a multiply action
-- Add a division action
-- Try to use the state returned by the agent call to keep a running sum that you can continue performing mathematical operations on, like a real calculator
-- Add any agentId (i.e "calculator-agent") and your SpinAPI key to the createAgent parameters and track your model on [our dashboard](https://app.spinai.dev).
+- Experiment with chaining operations to perform complex calculations.
+- Utilize the state management feature to maintain a running total for continuous calculations.
+- Integrate additional actions and logic to simulate advanced calculator functions.
+- Register your agent with an `agentId` and your SpinAPI key in the `createAgent` parameters to monitor your model's performance on [our dashboard](https://app.spinai.dev).
 
-This example serves as a basic introduction to Spin's framework.
+This guide aims to provide a comprehensive introduction to creating versatile calculator agents with Spin's framework, demonstrating the ease of incorporating complex mathematical operations into your AI projects.
