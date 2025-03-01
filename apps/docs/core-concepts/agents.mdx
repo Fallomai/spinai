@@ -5,28 +5,43 @@ description: "AI agents that coordinate actions to achieve goals"
 
 # Agents
 
-Agents are the core building blocks of SpinAI. They combine your chosen LLM with actions to solve tasks the way a human decision maker would.
+Agents are the core building blocks of SpinAI. They combine your chosen LLM with actions to solve tasks the way a human decision maker would. This document outlines the process of creating new agent types and instances, detailing their configurations and capabilities.
 
-## Quick Start
+## Agent Types
+
+The SpinAI framework supports the creation of various agent types to cater to different needs and functionalities. Each agent type is defined by its configuration, including the instructions it follows, the actions it can perform, and the language model it uses for decision-making.
+
+## Creating Agents
+
+Creating an agent involves specifying its behavior and operational parameters. The `createAgent` function is used to instantiate a new agent with a given configuration.
+
+### Defining a New Agent Type
+
+To define a new agent type, you must specify the agent's configuration. This includes the instructions for the agent, the actions it can perform, and the language model it uses.
 
 ```typescript
-import { createAgent, createOpenAILLM } from "spinai";
-import { searchProducts, createOrder } from "./actions";
+import { AgentConfig, createAgent } from "spinai/src/agents";
+import { LanguageModelV1 } from "ai";
+import { Action } from "spinai/src/actions";
 
-// Initialize your LLM
-const llm = createOpenAILLM({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-// Create an agent
-const agent = createAgent({
+// Define the configuration for a new agent type
+const agentConfig: AgentConfig = {
   instructions: "You are a helpful shopping assistant",
-  actions: [searchProducts, createOrder],
-  llm,
-});
+  model: LanguageModelV1,
+  actions: [/* Array of actions the agent can perform */],
+};
+```
+
+### Creating a New Agent Instance
+
+Once you have defined the agent type, you can create an instance of the agent by passing the configuration to the `createAgent` function.
+
+```typescript
+// Create an instance of the agent
+const shoppingAgent = createAgent(agentConfig);
 
 // Use the agent
-const { response } = await agent({
+const { response } = await shoppingAgent({
   input: "Order me a medium red t-shirt under $30",
 });
 ```
@@ -35,46 +50,81 @@ const { response } = await agent({
 
 ### Agent Creation Parameters
 
-| Parameter        | Type                                        | Required | Description                                         |
-| ---------------- | ------------------------------------------- | -------- | --------------------------------------------------- |
-| `instructions`   | `string`                                    | Yes      | Instructions that guide the agent's behavior        |
-| `actions`        | `Action[]`                                  | Yes      | Array of actions the agent can perform              |
-| `llm`            | `BaseLLM`                                   | Yes      | Language model for decision making                  |
-| `spinApiKey`     | `string`                                    | No       | API key for SpinAI dashboard integration            |
-| `agentId`        | `string`                                    | No       | Unique identifier for the agent in SpinAI dashboard |
-| `debug`          | `"none" \| "default" \| "verbose" \| "all"` | No       | Debug logging level                                 |
-| `responseFormat` | `JSONSchema`                                | No       | Schema for structured responses, defaults to string |
+The `AgentConfig` interface outlines the parameters required to create a new agent.
+
+```typescript
+interface AgentConfig {
+  instructions: string;
+  model: LanguageModelV1;
+  actions: Action[];
+  agentId?: string;
+  spinApiKey?: string;
+}
+```
+
+- `instructions`: The guidelines that dictate the agent's behavior.
+- `model`: The language model used for decision-making.
+- `actions`: An array of actions the agent can perform.
+- `agentId` (optional): A unique identifier for the agent in the SpinAI dashboard.
+- `spinApiKey` (optional): API key for SpinAI dashboard integration.
 
 ### Agent Execution Parameters
 
-| Parameter            | Type                  | Required | Description                      |
-| -------------------- | --------------------- | -------- | -------------------------------- |
-| `input`              | `string`              | Yes      | User input or task description   |
-| `state`              | `Record<string  any>` | No       | Initial state for the execution  |
-| `externalCustomerId` | `string`              | No       | Customer identifier for tracking |
+The `AgentRunConfig` interface specifies the parameters for executing an agent instance.
+
+```typescript
+interface AgentRunConfig {
+  input: string;
+  maxSteps?: number;
+  sessionId?: string;
+  externalCustomerId?: string;
+  state?: Record<string, any>;
+  isRerun?: boolean;
+  actions?: Action[];
+  model?: LanguageModelV1;
+  debug?: DebugMode;
+  agentId?: string;
+  spinApiKey?: string;
+}
+```
+
+- `input`: The user input or task description.
+- Additional parameters control execution behavior, such as `maxSteps` for the maximum number of steps the agent should take, and `sessionId` for maintaining context across interactions.
 
 ### Return Values
 
-| Parameter         | Type                  | Description                                         |
-| ----------------- | --------------------- | --------------------------------------------------- |
-| `response`        | `T \| string`         | Agent's response (typed if responseFormat provided) |
-| `totalCostCents`  | `number`              | Total cost of LLM calls in cents                    |
-| `totalDurationMs` | `number`              | Total execution time in milliseconds                |
-| `sessionId`       | `string`              | Unique identifier for the conversation              |
-| `interactionId`   | `string`              | Unique identifier for this specific interaction     |
-| `state`           | `Record<string, any>` | Final state after execution                         |
+The `AgentResponse` interface describes the structure of the agent's response.
+
+```typescript
+interface AgentResponse<T = unknown> {
+  response: T;
+  sessionId: string;
+  interactionId: string;
+  totalDurationMs: number;
+  totalCostCents: number;
+  state: Record<string, unknown>;
+  messages: Messages;
+}
+```
+
+- `response`: The agent's response, typed if a response format is provided.
+- `sessionId` and `interactionId`: Unique identifiers for the conversation and specific interaction, respectively.
+- `totalDurationMs` and `totalCostCents`: Metrics on the execution's duration and cost.
+- `state`: The final state after execution.
 
 ## Use Cases
 
+Agents can be tailored for various use cases, from simple query responses to complex, stateful interactions. Here are some examples:
+
 ### 1. Basic Agent
 
-Simple agent that responds to queries:
+A simple agent that responds to queries:
 
 ```typescript
 const agent = createAgent({
   instructions: "You are a helpful assistant",
-  actions: [searchKnowledge, respondToUser],
-  llm,
+  actions: [/* Array of actions */],
+  model: LanguageModelV1,
 });
 
 const { response } = await agent({
@@ -84,9 +134,10 @@ const { response } = await agent({
 
 ### 2. Structured Responses (Response Format)
 
-Agent that returns typed data:
+An agent that returns typed data, useful for structured responses:
 
 ```typescript
+// Define the response format
 interface OrderStatus {
   orderId: string;
   status: "pending" | "shipped" | "delivered";
@@ -95,45 +146,28 @@ interface OrderStatus {
 
 const orderAgent = createAgent<OrderStatus>({
   instructions: "Track order status",
-  actions: [getOrderDetails],
-  llm,
-  responseFormat: {
-    type: "object",
-    properties: {
-      orderId: { type: "string" },
-      status: { type: "string", enum: ["pending", "shipped", "delivered"] },
-      estimatedDelivery: { type: "string" },
-    },
-    required: ["orderId", "status"],
-  },
+  actions: [/* Array of actions */],
+  model: LanguageModelV1,
 });
 ```
 
 ### 3. Dashboard Integration
 
-Agent with monitoring enabled:
+An agent with monitoring enabled for dashboard integration:
 
 ```typescript
 const agent = createAgent({
   instructions: "Handle customer support",
-  actions: [getCustomer, createTicket],
-  llm,
+  actions: [/* Array of actions */],
+  model: LanguageModelV1,
   spinApiKey: process.env.SPINAI_API_KEY,
   agentId: "support-agent",
-  debug: "verbose",
-});
-
-const { response, totalCostCents } = await agent({
-  input: "I need help with my order",
-  externalCustomerId: "customer_123",
 });
 ```
 
 ### 4. Session Management with Reruns
 
-In order to use reruns, the state at the end of the last interaction can be passed in to the new rerun interaction.
-
-Maintaining context across interactions:
+Agents can maintain context across interactions, allowing for session management and reruns:
 
 ```typescript
 // Initial interaction
@@ -141,32 +175,12 @@ const { response, sessionId, state } = await agent({
   input: "Create a ticket for my broken laptop",
 });
 
-// Follow-up using .rerun()
-const { response: updatedResponse } = await agent.rerun({
+// Follow-up interaction
+const { response: updatedResponse } = await agent({
   sessionId: sessionId,
   input: "Add that it's a MacBook Pro",
   state: state,
 });
-```
-
-## Debug Logging
-
-Different debug levels provide varying amounts of information:
-
-| Level     | Information Shown             |
-| --------- | ----------------------------- |
-| `none`    | No logging                    |
-| `default` | Basic flow and metrics        |
-| `verbose` | Adds reasoning and parameters |
-| `all`     | Adds full prompts and details |
-
-Example output (default level):
-
-```bash
-🤖 Planning next actions (took 234ms, cost 0.5¢)
-⚡ Executing getCustomerInfo (took 123ms)
-   Parameters: {"customerId": "123"}
-📊 Task complete (took 892ms, cost 1.2¢)
 ```
 
 ## Next Steps
