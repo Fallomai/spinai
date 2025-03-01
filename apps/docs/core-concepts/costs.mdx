@@ -1,0 +1,86 @@
+---
+title: "Understanding Costs"
+description: "Learn about the costs module in SpinAI, including its types, models, and how to calculate costs."
+---
+
+## Introduction to Costs
+
+The costs module in SpinAI is designed to help developers understand and calculate the costs associated with using various AI language models. This module provides a framework for calculating costs based on token usage, which is a common billing metric for AI services. By integrating cost calculations directly into your applications, you can better manage and predict expenses related to AI model usage.
+
+## Cost Types
+
+The costs module introduces several key types and interfaces to facilitate cost calculations:
+
+- **ModelCost**: Represents the cost structure for a specific model, detailing input and output costs per 1 million tokens in USD.
+- **ModelCostsMap**: A record type mapping model IDs to their respective cost structures.
+- **ModelId**: A string type representing the ID of a model within the costs map.
+- **CalculateCostParams**: Parameters required for calculating costs, including token usage and model ID.
+
+These types are essential for understanding and utilizing the costs module effectively.
+
+```typescript
+interface ModelCost {
+  input: number;
+  output: number;
+}
+
+type ModelCostsMap = Record<string, ModelCost>;
+
+type ModelId = string;
+
+interface CalculateCostParams {
+  usage: any; // LanguageModelUsage from ai package
+  model: string;
+}
+```
+
+## Cost Models
+
+The costs module aggregates cost data from various sources, including OpenAI, Anthropic, and other models, into a unified `MODEL_COSTS` map. This allows for easy lookup and calculation of costs across different AI models.
+
+```typescript
+import { ModelCostsMap } from "../costs.types";
+import { OPENAI_MODEL_COSTS } from "./openai.costs";
+import { ANTHROPIC_MODEL_COSTS } from "./anthropic.costs";
+import { OTHER_MODEL_COSTS } from "./misc.costs";
+
+export const MODEL_COSTS: ModelCostsMap = {
+  ...OPENAI_MODEL_COSTS,
+  ...ANTHROPIC_MODEL_COSTS,
+  ...OTHER_MODEL_COSTS,
+};
+```
+
+## Using Cost Models
+
+To calculate the cost of using an AI model, you can use the `calculateCost` function. This function takes in the number of input and output tokens used by the model and the model ID, then returns the cost in USD.
+
+```typescript
+import { calculateCost, CalculateCostParams } from "spinai/costs";
+
+const params: CalculateCostParams = {
+  usage: {
+    promptTokens: 1000,
+    completionTokens: 1500,
+  },
+  model: "gpt-3.5-turbo",
+};
+
+const costInUSD = calculateCost(params);
+console.log(`Cost in USD: ${costInUSD}`);
+```
+
+## Defining Custom Costs
+
+While the costs module comes pre-populated with cost data for several models, you may need to define custom costs for models not included or for proprietary models. You can extend the `MODEL_COSTS` map with your own cost structures:
+
+```typescript
+import { MODEL_COSTS } from "spinai/costs/models";
+
+MODEL_COSTS["my-custom-model"] = {
+  input: 0.002, // USD per 1M input tokens
+  output: 0.0025, // USD per 1M output tokens
+};
+```
+
+By understanding and utilizing the costs module in SpinAI, developers can more effectively manage and predict expenses associated with AI model usage, ensuring more efficient and cost-effective AI integrations.
