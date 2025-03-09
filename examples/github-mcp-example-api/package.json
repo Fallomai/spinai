@@ -1,0 +1,22 @@
+{
+  "name": "github-mcp-example",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "NODE_OPTIONS='--experimental-specifier-resolution=node' tsx watch src/server.ts",
+    "start": "node dist/server.js"
+  },
+  "dependencies": {
+    "@ai-sdk/openai": "^1.2.1",
+    "@hono/node-server": "^1.8.2",
+    "dotenv": "^16.4.7",
+    "hono": "^4.1.0",
+    "spinai": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "tsx": "^4.7.1",
+    "typescript": "^5.3.3"
+  }
+}
