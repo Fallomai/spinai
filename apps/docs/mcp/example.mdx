@@ -1,0 +1,256 @@
+---
+title: "Example Agent using MCP"
+description: "Learn how to use Model Context Protocol (MCP) actions in a SpinAI application that can control Github using Smithery's MCP"
+---
+
+In this guide, we'll create a simple GitHub assistant that can help manage repositories using MCP actions. You'll learn how to:
+
+- Set up a SpinAI project with MCP integration
+- Configure GitHub actions through MCP
+- Create an agent that can interact with GitHub's API
+- Test your agent with a basic repository creation task
+
+## Getting Started
+
+### 1. Create a New SpinAI Project
+
+```bash
+npx create-spinai
+```
+
+When prompted, select the default template. This will set up a basic SpinAI project structure for us to build upon.
+
+> 💡 **Quick Start**: If you want to skip the manual setup, you can select the `GitHub MCP Agent` template instead of the default template. **This will automatically configure everything we'll cover in steps 1-5, and you can jump straight to running the agent (don't forget to setup your environment variables, though!).**
+
+### 2. Set Up Environment Variables
+
+Create a `.env` file in your project root and add the following variables:
+
+```bash
+OPENAI_API_KEY="your_openai_api_key"
+GITHUB_TOKEN="your_github_token"
+```
+
+You'll need:
+
+1. An OpenAI API key for running the agent. We're using OpenAI's model in this example, but you can swap it for any model supported by [Vercel's AI SDK](https://sdk.vercel.ai/docs/introduction).
+
+2. A GitHub personal access token. To create one:
+   - Go to GitHub's [Developer Settings](https://github.com/settings/tokens)
+   - Click "Generate new token (classic)"
+   - Give your token a descriptive name (e.g., "SpinAI GitHub Assistant")
+   - Select only the permissions you're comfortable with. For this example, you'll need:
+     - `repo` access to create and manage repositories
+     - `read:user` for basic profile information
+   - Copy the generated token (you won't be able to see it again!)
+   - Paste it into your `.env` file as the `GITHUB_TOKEN` value
+
+⚠️ **Security Note**: Never commit your `.env` file to version control. It should belisted in your `.gitignore`, but in case it's not, make sure it is.
+
+### 3. Set Up MCP Configuration
+
+You'll need to create an MCP configuration file to specify which MCP actions you want to use. There are two ways to do this:
+
+The easiest way is to use our CLI tool:
+
+```bash
+npx spinai-mcp install @smithery-ai/github --provider smithery --config "{\"githubPersonalAccessToken\":\"move_my_token_to_a_dot_env_after\"}"
+```
+
+This command will automatically create or update your `mcp-config.ts` file with the GitHub MCP configuration.
+
+**NOTE:** It's highly recommended to keep your GITHUB_TOKEN in your `.env` and either import it in your mcp-config.ts, or in the next step.
+
+### 4. Set Up the Agent
+
+Now we'll set up our agent to use the MCP actions. Open your `src/index.ts` file and replace the boilerplate code with:
+
+```typescript
+import { createAgent, createActionsFromMcpConfig } from "spinai";
+import { openai } from "@ai-sdk/openai";
+import * as dotenv from "dotenv";
+// @ts-ignore
+import mcpConfig from "../mcp-config.ts";
+
+dotenv.config();
+
+async function main() {
+  // Create actions from MCP configuration
+  console.log("Setting up MCP actions...");
+  const mcpActions = await createActionsFromMcpConfig({
+    config: mcpConfig,
+    // if you didn't include your GITHUB_TOKEN in your mcp-config.ts
+    envMapping: {
+      githubPersonalAccessToken: process.env.GITHUB_TOKEN,
+    },
+    // If there are any actions you would like to exclude. A full list of actions can be found at https://smithery.ai/server/@smithery-ai/github
+    excludedActions: ["smithery_ai_github_get_issue"],
+  });
+
+  const agent = createAgent({
+    instructions: `You are a GitHub assistant that can help with repository management.
+    Use the available GitHub actions to help users with their requests.`,
+    actions: [...mcpActions],
+    model: openai("gpt-4o"),
+  });
+
+  // Run the agent with a test command
+  const { response } = await agent({
+    input: "Create a github repo called 'GlubGlub' please",
+  });
+
+  console.log("Response:", response);
+}
+
+main().catch(console.error);
+```
+
+Let's break down what's happening:
+
+1. We import the necessary functions from SpinAI and the OpenAI model from AI SDK
+2. `createActionsFromMcpConfig` translates our MCP configuration into SpinAI actions
+3. We create an agent with those actions and instructions about its purpose
+4. Finally, we run the agent with a test command to create a repository
+
+### 5. Run the Agent
+
+Now you can run your agent:
+
+```bash
+npm run dev
+```
+
+You can modify the `input` in your code to make the agent perform different GitHub tasks. For example:
+
+```typescript
+// Create a new repository
+input: "Create a github repo called 'GlubGlub' please";
+
+// Create an issue in an existing repository
+input: "Create an issue in my repository about adding documentation";
+
+// Search for repositories
+input: "Find repositories related to machine learning";
+```
+
+The agent will use the appropriate GitHub MCP actions based on your requests.
+
+## Optional Next Steps
+
+### 6. Deploy as an API Endpoint
+
+If you want to use your GitHub assistant as a workflow endpoint, you can wrap it in a web server. Here's a quick example using Hono:
+
+```typescript
+import { Hono } from "hono";
+import { createAgent, createActionsFromMcpConfig } from "spinai";
+import { openai } from "@ai-sdk/openai";
+import mcpConfig from "./mcp-config.ts";
+// your dotenv config and other stuff here
+
+const app = new Hono();
+const mcpActions = await createActionsFromMcpConfig(mcpConfig);
+
+const agent = createAgent({
+  instructions: `You are a GitHub assistant that can help with repository management.
+  Use the available GitHub actions to help users with their requests.`,
+  actions: [...mcpActions],
+  model: openai("gpt-4o"),
+});
+
+app.post("/github-assistant", async (c) => {
+  const { input } = await c.req.tson();
+  const { response } = await agent({ input });
+  return c.tson({ response });
+});
+
+export default app;
+```
+
+### 7. Create an Interactive Chat Loop
+
+For a more interactive experience, you can create a chat loop that maintains conversation history:
+
+```typescript
+import { createAgent, createActionsFromMcpConfig } from "spinai";
+import * as dotenv from "dotenv";
+import { openai } from "@ai-sdk/openai";
+import * as readline from "readline";
+// @ts-ignore
+import mcpConfig from "../mcp-config.ts";
+
+dotenv.config();
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
+async function chat() {
+  console.log("Setting up...");
+  const mcpActions = await createActionsFromMcpConfig(mcpConfig);
+  console.log("\n🤖 Ready! Type your message (or 'exit' to quit)\n");
+
+  const agent = createAgent({
+    instructions: `You are a GitHub assistant that can help with repository management.
+    Use the available GitHub actions to help users with their requests.`,
+    actions: [...mcpActions],
+    model: openai("gpt-4o-mini"),
+  });
+
+  let messageHistory: any[] = [];
+
+  function getInput() {
+    rl.question("> ", async (input) => {
+      if (input.toLowerCase() === "exit") {
+        rl.close();
+        return;
+      }
+
+      try {
+        const { messages, response } = await agent({
+          input,
+          messages: messageHistory,
+        });
+
+        // Update message history
+        messageHistory = messages;
+
+        // Show any tool calls
+        const toolCalls = messages.filter((m) => m.role === "tool");
+        if (toolCalls.length > 0) {
+          console.log("\nActions:");
+          toolCalls.forEach((call) => {
+            console.log(`• ${call.content[0].toolName}`);
+          });
+          console.log();
+        }
+
+        console.log(`Assistant: ${response}\n`);
+      } catch (error) {
+        console.error("\nError:", error, "\n");
+      }
+
+      getInput();
+    });
+  }
+
+  getInput();
+}
+
+chat().catch(console.error);
+
+// Handle clean exit
+rl.on("close", () => {
+  console.log("\nGoodbye!");
+  process.exit(0);
+});
+```
+
+This creates an interactive CLI where you can have ongoing conversations with your GitHub assistant while maintaining context.
+
+### 8. Add a UI (Coming Soon!)
+
+Want to turn your GitHub assistant into a full-fledged chat application with a beautiful UI? We're working on making this seamless with a one-line integration. Stay tuned for updates!
+
+In the meantime, you can build your own UI using your preferred frontend framework and connect it to either the API endpoint from step 7 or adapt the chat logic from step 8.

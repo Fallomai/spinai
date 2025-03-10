@@ -1,5 +1,17 @@
 # spinai-mcp
 
+## 1.0.6
+
+### Patch Changes
+
+- 0042abd: update npx command and config for createActionsFromMcpConfig
+
+## 1.0.5
+
+### Patch Changes
+
+- 938fbbe: Update MCP config
+
 ## 1.0.4
 
 ### Patch Changes

@@ -11,10 +11,17 @@ import { McpConfig } from "./mcp.types";
 export interface CreateActionsFromMcpConfigOptions {
   /** The MCP configuration object */
   config: McpConfig;
-  /** Additional environment variable mappings to apply to all MCPs */
-  envMapping?: Record<string, string>;
+  /**
+   * Environment variable mappings to apply to all MCPs.
+   * Format: { "MCP_VAR_NAME": "value_or_env_var_name" }
+   * If the value is an environment variable name, its value will be used.
+   * Otherwise, the literal value will be used.
+   */
+  envMapping?: Record<string, string | undefined>;
   /** IDs of actions to exclude */
   excludedActions?: string[];
+  /** IDs of actions to include (if empty, all actions except excluded ones are included) */
+  includedActions?: string[];
 }
 
 /**
@@ -24,6 +31,7 @@ export async function createActionsFromMcpConfig({
   config,
   envMapping: globalEnvMapping = {},
   excludedActions = [],
+  includedActions = [],
 }: CreateActionsFromMcpConfigOptions) {
   const actions = [];
 
@@ -50,19 +58,39 @@ export async function createActionsFromMcpConfig({
     // Map environment variables if mappings are provided
     const mappedEnv: Record<string, string> = {};
 
-    // First apply global env mapping
-    for (const [envVar, mcpVar] of Object.entries(globalEnvMapping)) {
-      if (process.env[envVar]) {
-        mappedEnv[mcpVar] = process.env[envVar] as string;
+    // First apply MCP-specific env mapping
+    if (mcpConfig.envMapping) {
+      for (const [mcpVarName, valueOrEnvVar] of Object.entries(
+        mcpConfig.envMapping
+      )) {
+        // Skip undefined values
+        if (valueOrEnvVar === undefined) continue;
+
+        // Check if this is an environment variable reference
+        if (valueOrEnvVar in process.env) {
+          // Use the environment variable value (using nullish coalescing to handle undefined)
+          mappedEnv[mcpVarName] = process.env[valueOrEnvVar] ?? "";
+        } else {
+          // Use the literal value
+          mappedEnv[mcpVarName] = valueOrEnvVar;
+        }
       }
     }
 
-    // Then apply MCP-specific env mapping (takes precedence)
-    if (mcpConfig.envMapping) {
-      for (const [envVar, mcpVar] of Object.entries(mcpConfig.envMapping)) {
-        if (process.env[envVar]) {
-          mappedEnv[mcpVar] = process.env[envVar] as string;
-        }
+    // Then apply global env mapping (takes precedence over MCP-specific)
+    for (const [mcpVarName, valueOrEnvVar] of Object.entries(
+      globalEnvMapping
+    )) {
+      // Skip undefined values
+      if (valueOrEnvVar === undefined) continue;
+
+      // Check if this is an environment variable reference
+      if (valueOrEnvVar in process.env) {
+        // Use the environment variable value (using nullish coalescing to handle undefined)
+        mappedEnv[mcpVarName] = process.env[valueOrEnvVar] ?? "";
+      } else {
+        // Use the literal value
+        mappedEnv[mcpVarName] = valueOrEnvVar;
       }
     }
 
@@ -77,7 +105,11 @@ export async function createActionsFromMcpConfig({
       command: mcpConfig.command === "npx" ? npxPath : mcpConfig.command,
       args,
       env: {
-        ...mcpConfig.envMapping,
+        // Include any direct environment variables from mappings
+        ...mappedEnv,
+        // Include the original envMapping for backward compatibility
+        ...(mcpConfig.envMapping as Record<string, string>),
+        // Include all environment variables
         ...(Object.fromEntries(
           Object.entries(process.env).filter(([_, v]) => v !== undefined)
         ) as Record<string, string>),
@@ -101,6 +133,14 @@ export async function createActionsFromMcpConfig({
           // Skip this action if it's in the excludedActions list
           if (excludedActions.includes(actionId)) {
             console.log(`Skipping excluded action: ${actionId}`);
+            continue;
+          }
+
+          // Skip this action if includedActions is not empty and this action is not in the list
+          if (
+            includedActions.length > 0 &&
+            !includedActions.includes(actionId)
+          ) {
             continue;
           }
 

@@ -1,6 +1,6 @@
 {
   "name": "spinai-mcp",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "type": "module",
   "description": "MCP package manager for SpinAI",
   "repository": {

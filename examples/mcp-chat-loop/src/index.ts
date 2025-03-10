@@ -3,7 +3,7 @@ import * as dotenv from "dotenv";
 import { openai } from "@ai-sdk/openai";
 import * as readline from "readline";
 // @ts-ignore
-import mcpConfig from "../mcp-config.js";
+import mcpConfig from "../mcp-config.ts";
 
 dotenv.config();
 
@@ -17,9 +17,13 @@ async function chat() {
   const mcpActions = await createActionsFromMcpConfig({
     config: mcpConfig,
     envMapping: {
-      GITHUB_TOKEN: "githubPersonalAccessToken",
+      githubPersonalAccessToken: process.env.GITHUB_TOKEN,
     },
-    excludedActions: ["smithery_ai_github_get_issue"],
+    // excludedActions: ["smithery_ai_github_get_issue"],
+    includedActions: [
+      "smithery_ai_github_create_or_update_file",
+      "smithery_ai_github_create_repository",
+    ],
   });
 
   console.log("\n🤖 Ready! Type your message (or 'exit' to quit)\n");
@@ -50,20 +54,12 @@ async function chat() {
         messageHistory = messages;
 
         // Show any tool calls
-        const toolCalls = messages.filter((m) => m.role === "tool");
-        if (toolCalls.length > 0) {
-          console.log("\nActions:");
-          toolCalls.forEach((call) => {
-            console.log(`• ${call.content[0].toolName}`);
-          });
-          console.log();
-        }
 
         console.log(`Assistant: ${response}\n`);
       } catch (error) {
         console.error("\nError:", error, "\n");
       }
-
+      ``;
       getInput();
     });
   }

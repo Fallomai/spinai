@@ -48,7 +48,7 @@
     },
     {
       "group": "Using Spin with MCPs",
-      "pages": ["mcp/overview"]
+      "pages": ["mcp/overview", "mcp/example"]
     },
     {
       "group": "Core Concepts",

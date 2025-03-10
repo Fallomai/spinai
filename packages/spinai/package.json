@@ -1,6 +1,6 @@
 {
   "name": "spinai",
-  "version": "2.0.8",
+  "version": "2.0.10",
   "license": "MIT",
   "author": "FallomAI",
   "description": "A lightweight framework for building AI agents",
