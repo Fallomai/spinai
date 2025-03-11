@@ -1,22 +1,33 @@
-import { openai } from "@ai-sdk/openai";
-import { jsonSchema, streamText } from "ai";
+import { NextResponse } from "next/server";
 
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  const { messages, system, tools } = await req.json();
+  const { message, history } = await req.json();
 
-  const result = streamText({
-    model: openai("gpt-4o"),
-    messages,
-    system,
-    tools: Object.fromEntries(
-      Object.keys(tools).map((name) => [
-        name,
-        { ...tools[name], parameters: jsonSchema(tools[name].parameters) },
-      ])
-    ),
-  });
+  try {
+    const response = await fetch("http://localhost:3001/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message,
+        history,
+      }),
+    });
 
-  return result.toDataStreamResponse();
+    if (!response.ok) {
+      throw new Error("API request failed");
+    }
+
+    const data = await response.json();
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error("Error:", error);
+    return NextResponse.json(
+      { error: "Failed to process request" },
+      { status: 500 }
+    );
+  }
 }

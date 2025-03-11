@@ -24,9 +24,8 @@ async function initializeAgent() {
   const mcpActions = await createActionsFromMcpConfig({
     config: mcpConfig,
     envMapping: {
-      GITHUB_TOKEN: process.env.GITHUB_TOKEN,
+      githubPersonalAccessToken: process.env.GITHUB_TOKEN,
     },
-    excludedActions: ["smithery_ai_github_get_issue"],
   });
 
   agent = createAgent({
