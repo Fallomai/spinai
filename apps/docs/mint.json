@@ -44,11 +44,17 @@
   "navigation": [
     {
       "group": "Get Started",
-      "pages": ["get-started/quickstart", "get-started/introduction"]
+      "pages": [
+        "get-started/quickstart",
+        "get-started/introduction"
+      ]
     },
     {
       "group": "Using Spin with MCPs",
-      "pages": ["mcp/overview", "mcp/example"]
+      "pages": [
+        "mcp/overview",
+        "mcp/example"
+      ]
     },
     {
       "group": "Core Concepts",
@@ -57,20 +63,26 @@
         "core-concepts/actions",
         "core-concepts/state-and-parameters",
         "core-concepts/observability",
-        "core-concepts/task-loop"
+        "core-concepts/task-loop",
+        "core-concepts/deployment-and-environment-setup"
       ]
     },
     {
       "group": "Supported LLMs",
-      "pages": ["llms/overview"]
+      "pages": [
+        "llms/overview"
+      ]
     },
     {
       "group": "Examples",
       "pages": [
         {
           "group": "Calculator agent (beginners)",
-          "pages": ["examples/calculator-agent/overview"]
-        }
+          "pages": [
+            "examples/calculator-agent/overview"
+          ]
+        },
+        "examples/development-container-setup"
       ]
     }
   ],
