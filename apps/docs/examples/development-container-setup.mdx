@@ -1,0 +1,51 @@
+---
+title: "Setting Up a Development Container"
+description: "Learn how to set up and use a development container in Visual Studio Code for a seamless development experience."
+---
+
+## Introduction
+
+Development containers in Visual Studio Code provide a fully configured development environment that can be used across multiple machines. This ensures consistency across development teams and minimizes the "it works on my machine" problem. In this guide, we'll walk through setting up a development container for a TypeScript Node.js project.
+
+## Configuration
+
+The core of a development container is defined in a `devcontainer.json` file. This file specifies the Docker image to use, any Visual Studio Code extensions that should be installed in the container, port forwarding configurations, environment variables, and a command to run after creating the container.
+
+### Example devcontainer.json configuration
+
+Below is an example `devcontainer.json` configuration for a project named "SpinAI Development". It uses a TypeScript Node.js image, installs the ESLint extension, forwards port 3000, sets up environment variables for Azure OpenAI, and runs `npm install` post-creation.
+
+```json
+{
+  "name": "SpinAI Development",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:0-18",
+  "features": {},
+  "customizations": {
+    "vscode": {
+      "extensions": ["dbaeumer.vscode-eslint"]
+    }
+  },
+  "forwardPorts": [3000],
+  "remoteEnv": {
+    "AZURE_OPENAI_API_KEY": "${localEnv:AZURE_OPENAI_API_KEY}",
+    "AZURE_OPENAI_ENDPOINT": "${localEnv:AZURE_OPENAI_ENDPOINT}",
+    "AZURE_OPENAI_MODEL_NAME": "${localEnv:AZURE_OPENAI_MODEL_NAME}",
+    "AZURE_OPENAI_REGION": "${localEnv:AZURE_OPENAI_REGION}"
+  },
+  "postCreateCommand": "npm install"
+}
+```
+
+## Usage
+
+To use a development container, you need to have Docker installed on your machine and the Remote - Containers extension installed in Visual Studio Code.
+
+1. **Install Docker**: Ensure Docker is installed and running on your machine.
+2. **Install the Remote - Containers Extension**: Search for "Remote - Containers" in the Visual Studio Code extensions marketplace and install it.
+3. **Open Your Project in a Container**: With the extension installed, open the command palette (`Ctrl+Shift+P` or `Cmd+Shift+P` on macOS) and select "Remote-Containers: Open Folder in Container...". Navigate to your project folder and select it. Visual Studio Code will build the container based on your `devcontainer.json` file and open your project inside it.
+
+Once your project is open in the container, you can install dependencies, run your application, and debug, all within an isolated Docker container. This setup ensures that you have a consistent development environment that closely mirrors your production environment.
+
+For more detailed instructions and troubleshooting, refer to the [Visual Studio Code documentation on development containers](https://code.visualstudio.com/docs/remote/containers).
+
+This guide provides a basic overview of setting up a development container. For more complex configurations, such as adding additional Dockerfiles or using Docker Compose, consult the official documentation.
