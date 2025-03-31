@@ -1,0 +1,123 @@
+---
+title: "Deployment and Environment Setup"
+description: "Learn how to set up and deploy your application using GitHub Actions and manage environment variables for secure and efficient operations."
+---
+
+## GitHub Actions Workflow
+
+GitHub Actions offers a powerful, integrated CI/CD service that can automate your software build, test, and deployment processes directly from your GitHub repository. The following example demonstrates how to configure a GitHub Actions workflow for deploying an application.
+
+### Configuring GitHub Actions for Deployment
+
+To deploy your application using GitHub Actions, you need to create a workflow file in your repository under `.github/workflows/`, such as `deploy.yml`. This file defines the deployment process, including the environment setup, build steps, and deployment actions.
+
+```yaml
+name: Deploy Application
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build application
+        run: npm run build
+
+      - name: Deploy application
+        env:
+          AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY }}
+          AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
+          AZURE_OPENAI_MODEL_NAME: ${{ secrets.AZURE_OPENAI_MODEL_NAME }}
+          AZURE_OPENAI_REGION: ${{ secrets.AZURE_OPENAI_REGION }}
+        run: |
+          npm start
+```
+
+This workflow is triggered on every push to the `main` branch, setting up the Node.js environment, installing dependencies, building the application, and finally deploying it. Environment variables and secrets, such as API keys, are securely passed to the deployment environment.
+
+## Environment Variables
+
+Environment variables are essential for managing configuration and secrets in your application. They allow you to separate sensitive information and configuration details from your codebase, making your application more secure and adaptable to different environments.
+
+### Defining and Using Environment Variables in the Application
+
+The application should check for the presence of required environment variables at startup and fail gracefully if they are missing. This ensures that the application is configured correctly before it starts.
+
+```typescript
+import { startServer } from "./webhook-server";
+
+if (process.env.NODE_ENV !== "production") {
+  const dotenv = require("dotenv");
+  dotenv.config();
+}
+
+const requiredEnvVars = ["AZURE_OPENAI_API_KEY", "AZURE_OPENAI_ENDPOINT"];
+requiredEnvVars.forEach((envVar) => {
+  if (!process.env[envVar]) {
+    console.error(`Missing required environment variable: ${envVar}`);
+    process.exit(1);
+  }
+});
+
+const additionalEnvVars = ["AZURE_OPENAI_MODEL_NAME", "AZURE_OPENAI_REGION"];
+additionalEnvVars.forEach((envVar) => {
+  if (!process.env[envVar]) {
+    console.error(`Missing required environment variable: ${envVar}`);
+    process.exit(1);
+  }
+});
+
+startServer().catch((error) => {
+  console.error("Failed to start server:", error);
+  process.exit(1);
+});
+```
+
+This code snippet demonstrates how to check for the presence of both required and additional environment variables. It uses `dotenv` for loading environment variables from a `.env` file in non-production environments, which is useful for local development.
+
+## Server Initialization
+
+The final step in the deployment process is to start the server or application. This is typically done after all checks have passed, including the availability of necessary environment variables and successful build steps.
+
+The server initialization process should include error handling to catch and log any errors that occur during startup. This ensures that any startup issues are clearly communicated, allowing for quicker troubleshooting and resolution.
+
+### Starting the Server
+
+The server is started after all configuration checks and initializations are complete. This is usually the last step in the deployment process, signifying that the application is ready to accept requests.
+
+```typescript
+startServer().catch((error) => {
+  console.error("Failed to start server:", error);
+  process.exit(1);
+});
+```
+
+This example shows a simple server startup with basic error handling. It attempts to start the server and logs any errors that occur, exiting the process if startup fails. This pattern ensures that deployment failures are handled gracefully and are visible to the development team for further investigation.
+
+## Conclusion
+
+Deploying an application using GitHub Actions and managing environment variables securely are crucial aspects of modern application development and operations. By automating deployment processes and carefully managing configuration and secrets, you can ensure that your application is deployed efficiently, securely, and reliably.
+
+<CardGroup>
+  <Card title="Observability" icon="eye" href="/core-concepts/observability">
+    Learn how to make your deployments observable
+  </Card>
+  <Card title="Security Best Practices" icon="lock" href="/core-concepts/security-best-practices">
+    Explore security best practices for your applications
+  </Card>
+</CardGroup>
