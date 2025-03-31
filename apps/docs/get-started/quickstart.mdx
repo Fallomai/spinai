@@ -11,23 +11,49 @@ Use our CLI to create a new SpinAI project:
 npx create-spinai
 ```
 
+## Development Container Setup
+
+To streamline the development process, we've introduced a development container configuration. This setup requires Docker and Visual Studio Code with the Remote - Containers extension installed.
+
+1. Open your project in Visual Studio Code.
+2. Press `F1` to open the command palette and type "Remote-Containers: Open Folder in Container..." then hit enter.
+3. Select your project folder. Visual Studio Code will build the container defined in `.devcontainer/devcontainer.json` and open your project inside it.
+
+Your development container is now set up! This container includes all the necessary extensions and port forwards, and it automatically configures your environment variables.
+
 ## Choose a template, and configure your .env
 
-Read the README of the template you chose for a full list of env variables to setup
+Read the README of the template you chose for a full list of env variables to setup.
 
-Usually you'll need at minimum a `.env` file with your LLM's api key. All templates use OpenAI by default, but you can change the provider to your preferried LLM.
+Usually, you'll need at minimum a `.env` file with your LLM's API key. All templates use OpenAI by default, but you can change the provider to your preferred LLM.
 
 ```bash
 OPENAI_API_KEY=your_api_key_here
 ```
 
+## Application Initialization
+
+Before running your agent, ensure that all required environment variables are set. The application checks for these variables on startup:
+
+- `AZURE_OPENAI_API_KEY`
+- `AZURE_OPENAI_ENDPOINT`
+
+Optionally, if you're using specific models or regions, also include:
+
+- `AZURE_OPENAI_MODEL_NAME`
+- `AZURE_OPENAI_REGION`
+
+These checks are crucial for the application to run correctly and interact with the Azure OpenAI services.
+
 ## Run Your Agent
 
-Start your agent:
+Start your agent with the following command. This will also perform a check for the necessary environment variables before initializing:
 
 ```bash
 npm run dev
 ```
+
+If any required environment variables are missing, the application will terminate, prompting you to set them.
 
 ## Next Steps
 
@@ -35,10 +61,12 @@ npm run dev
   <Card title="Development Guide" icon="code" href="/get-started/development">
     Learn how to build more complex agents
   </Card>
-  <Card title="Development Guide" icon="code" href="/llms/overview">
+  <Card title="LLM Providers" icon="code" href="/llms/overview">
     Choose a different LLM provider
   </Card>
   <Card title="Examples" icon="lightbulb" href="/examples">
     View example SpinAI apps
   </Card>
 </CardGroup>
+
+By following these steps, you've set up a robust development environment and ensured your application is correctly configured to communicate with Azure's OpenAI services. Continue exploring the documentation to enhance your SpinAI project further.
